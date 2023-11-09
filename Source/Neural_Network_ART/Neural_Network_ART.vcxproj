@@ -140,10 +140,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="neural_network.cpp" />
+    <ClCompile Include="net.cpp" />
+    <ClCompile Include="neuron.cpp" />
+    <ClCompile Include="trainer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="neural_network.h" />
+    <Text Include="DataForTraining.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="net.h" />
+    <ClInclude Include="neuron.h" />
+    <ClInclude Include="trainer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
