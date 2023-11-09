@@ -83,8 +83,8 @@ void Net::forwardPropagation(const std::vector<double>& inputs)
 
 	for (unsigned i = 1; i < layers.size(); ++i) {
 		Layer& prevLayer = layers.at(i - 1);
-		for (size_t j = 0; j < layers.at(j).size() - 1; ++j) {
-			layers.at(0).at(j).feedForward(prevLayer);
+		for (size_t j = 0; j < layers.at(i).size() - 1; ++j) {
+			layers.at(i).at(j).feedForward(prevLayer);
 		}
 	}
 }

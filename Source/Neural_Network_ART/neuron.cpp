@@ -62,7 +62,7 @@ void Neuron::feedForward(const Layer& previousLayer)
 {
 	double innerProduct = 0.0;
 
-	for (size_t i = 0; i < previousLayer.size(); i++)
+	for (size_t i = 0; i < previousLayer.size(); ++i)
 	{
 		innerProduct += previousLayer.at(i).getOutput() * previousLayer.at(i).outputWeights.at(index).weight;
 	}
