@@ -20,6 +20,13 @@ Net::Net(const std::vector<unsigned int>& topology)
 	previousAverageError = 0.0;
 }
 
+Net::Net(const Net& original)
+{
+	layers = original.layers;
+	error = original.error;
+	previousAverageError = original.previousAverageError;
+}
+
 void Net::getResults(std::vector<double>& result) const
 {
 	result.clear();

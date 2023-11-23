@@ -29,6 +29,7 @@ public:
 	Neuron(unsigned int numOutputs, unsigned int myIndex);
 	void setOutput(double val) { output = val; }
 	double getOutput(void) const { return output; }
+	std::vector<Synapse> getOutputWeights() { return outputWeights; }
 	void feedForward(const Layer& prevLayer);
 	void calculateOutputGradients(double targetVals);
 	void calculateHiddenGradients(const Layer& nextLayer);

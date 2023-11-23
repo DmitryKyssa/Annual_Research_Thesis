@@ -4,6 +4,7 @@
 #include <cassert>
 #include "trainer.h"
 #include "net.h"
+#include "genetic.h"
 
 std::ostream& operator<<(std::ostream& out, std::vector<double>& vector) {
 	for (size_t i = 0; i < vector.size(); i++)
@@ -48,4 +49,6 @@ int main()
 	}
 
 	std::cout << std::endl << "Finish" << std::endl;
+
+	Genetic genAlgo;
 }

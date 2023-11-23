@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="genetic.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="net.cpp" />
     <ClCompile Include="neuron.cpp" />
@@ -148,6 +149,7 @@
     <Text Include="DataForTraining.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="genetic.h" />
     <ClInclude Include="net.h" />
     <ClInclude Include="neuron.h" />
     <ClInclude Include="trainer.h" />
