@@ -8,13 +8,21 @@ void Genetic::crossover(Net* mother, Net* father)
 
 	for (size_t i = 0; i < (*(childBoy)).getLayers().size(); i++) {
 		for (size_t j = 0; j < (*(childBoy)).getLayers().at(i).size() / 2; j++) {
-			(*(childBoy)).getLayers().at(i).at(j).getOutputWeights() = father->getLayers().at(i).at(j).getOutputWeights();
-			(*(childGirl)).getLayers().at(i).at(j).getOutputWeights() = mother->getLayers().at(i).at(j).getOutputWeights();
+			(*(childBoy)).getLayers().at(i).at(j).getOutputWeights() = 
+				father->getLayers().at(i).at(j).getOutputWeights();
+			(*(childGirl)).getLayers().at(i).at(j).getOutputWeights() = 
+				mother->getLayers().at(i).at(j).getOutputWeights();
 		}
 	}
 }
 
 void Genetic::selection()
 {
-	std
+	std::sort(population.begin(), population.end(), [](Net a, Net b) 
+		{return a.getRecentAverageError() < b.getRecentAverageError();});
+}
+
+void Genetic::reduction()
+{
+	for(size_t)
 }
