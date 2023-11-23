@@ -4,6 +4,7 @@
 #include "net.h"
 
 const size_t MAX_POPULATION = 10;
+const int MUTATION_PROBABILITY = 25;
 
 class Genetic
 {
@@ -12,5 +13,5 @@ public:
 	void crossover(Net* mother, Net* father);
 	void selection();
 	void reduction();
-	void mutation();
+	void mutation(size_t index);
 };
