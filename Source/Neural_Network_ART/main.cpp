@@ -5,14 +5,14 @@
 #include "trainer.h"
 #include "net.h"
 
-void printVector(std::string label, std::vector<double>& vector)
-{
-	std::cout << label << " ";
+std::ostream& operator<<(std::ostream& out, std::vector<double>& vector) {
 	for (size_t i = 0; i < vector.size(); i++)
 	{
-		std::cout << vector.at(i) << " ";
+		out << vector.at(i) << " ";
 	}
-	std::cout << std::endl;
+	out << std::endl;
+
+	return out;
 }
 
 int main()
@@ -32,14 +32,14 @@ int main()
 
 		if (trainData.getNextInputs(inputVals) != topology.at(0))
 			break;
-		printVector(" Inputs :", inputVals);
+		std::cout << " Inputs :" << inputVals;
 		myNet.forwardPropagation(inputVals);
 
 		myNet.getResults(resultVals);
-		printVector("Outputs:", resultVals);
+		std::cout << "Outputs:" << resultVals;
 
 		trainData.getTargetOutputs(targetVals);
-		printVector("Targets:", targetVals);
+		std::cout << "Targets:" << targetVals;
 		assert(targetVals.size() == topology.back());
 
 		myNet.backPropagation(targetVals);
