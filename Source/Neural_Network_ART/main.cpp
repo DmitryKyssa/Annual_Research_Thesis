@@ -24,31 +24,33 @@ int main()
 	trainData.getTopology(topology);
 	Net myNet(topology);
 
-	std::vector<double> inputVals, targetVals, resultVals;
+	std::vector<double> inputValues, targetValues, resultValues;
 	int trainingPass = 0;
 	while (!trainData.getEOF())
 	{
 		trainingPass++;
 		std::cout << std::endl << "Pass:" << trainingPass;
 
-		if (trainData.getNextInputs(inputVals) != topology.at(0))
+		if (trainData.getNextInputs(inputValues) != topology.at(0))
 			break;
-		std::cout << " Inputs :" << inputVals;
-		myNet.forwardPropagation(inputVals);
+		std::cout << " Inputs:" << inputValues;
+		myNet.forwardPropagation(inputValues);
 
-		myNet.getResults(resultVals);
-		std::cout << "Outputs:" << resultVals;
+		myNet.getResults(resultValues);
+		std::cout << "Outputs:" << resultValues;
 
-		trainData.getTargetOutputs(targetVals);
-		std::cout << "Targets:" << targetVals;
-		assert(targetVals.size() == topology.back());
+		trainData.getTargetOutputs(targetValues);
+		std::cout << "Targets:" << targetValues;
+		assert(targetValues.size() == topology.back());
 
-		myNet.backPropagation(targetVals);
+		myNet.backPropagation(targetValues);
 
-		std::cout << "Net average error: " << myNet.getRecentAverageError() << std::endl;
+		std::cout << "Net average error: " << myNet.getError() << std::endl;
 	}
 
 	std::cout << std::endl << "Finish" << std::endl;
 
 	Genetic genAlgo;
+
+	genAlgo.population.push_back(myNet);
 }
