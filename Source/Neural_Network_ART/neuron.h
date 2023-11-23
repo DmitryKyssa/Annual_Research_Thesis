@@ -34,4 +34,5 @@ public:
 	void calculateOutputGradients(double targetVals);
 	void calculateHiddenGradients(const Layer& nextLayer);
 	void updateInputWeights(Layer& prevLayer);
+	Neuron& operator=(const Neuron& other);
 };

@@ -26,14 +26,14 @@ void Genetic::selection()
 
 void Genetic::reduction()
 {
-	for (size_t i = population.size(); i >= MAX_POPULATION; -i) {
+	for (size_t i = population.size(); i >= MAX_POPULATION; --i) {
 		population.pop_back();
 	}
 }
 
 void Genetic::mutation(size_t index)
 {
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	int probability = rand() % 100;
 	if (probability < MUTATION_PROBABILITY) {
 		for (Neuron neuron : population.at(index).getLayers().at(0)) {

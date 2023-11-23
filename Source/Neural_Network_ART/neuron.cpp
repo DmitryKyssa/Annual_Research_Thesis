@@ -69,3 +69,8 @@ void Neuron::feedForward(const Layer& previousLayer)
 
 	output = Neuron::sigmoid(innerProduct);
 }
+
+Neuron& Neuron::operator=(const Neuron& other) {
+	outputWeights = other.outputWeights;
+	return *this;
+}

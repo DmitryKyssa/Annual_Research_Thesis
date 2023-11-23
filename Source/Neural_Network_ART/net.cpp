@@ -27,6 +27,14 @@ Net::Net(const Net& original)
 	previousAverageError = original.previousAverageError;
 }
 
+Net& Net::operator=(const Net& other)
+{
+	layers = other.layers;
+	error = other.error;
+	previousAverageError = other.previousAverageError;
+	return *this;
+}
+
 void Net::getResults(std::vector<double>& result) const
 {
 	result.clear();

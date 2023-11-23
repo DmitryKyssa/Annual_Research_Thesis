@@ -22,4 +22,5 @@ public:
 	double getError(){ return error; }
 	std::vector<Layer> getLayers() { return layers; }
 	void setName(std::string value) { name = value; }
+	Net& operator=(const Net& other);
 };
