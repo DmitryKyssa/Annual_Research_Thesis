@@ -18,11 +18,13 @@ void Genetic::crossover(Net* mother, Net* father)
 
 void Genetic::selection()
 {
-	std::sort(population.begin(), population.end(), [](Net a, Net b) 
-		{return a.getRecentAverageError() < b.getRecentAverageError();});
+	std::sort(population.begin(), population.end(), 
+		[](Net a, Net b) {return a.getError() < b.getError();});
 }
 
 void Genetic::reduction()
 {
-	for(size_t)
+	for (size_t i = population.size(); i >= MAX_POPULATION; -i) {
+		population.pop_back();
+	}
 }

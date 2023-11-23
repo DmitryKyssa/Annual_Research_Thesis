@@ -18,7 +18,8 @@ public:
 	void forwardPropagation(const std::vector<double>& inputVals);
 	void backPropagation(const std::vector<double>& targetVals);
 	void getResults(std::vector<double>& resultVals) const;
-	double getRecentAverageError(void) const { return previousAverageError; }
+	double getRecentAverageError(){ return previousAverageError; }
+	double getError(){ return error; }
 	std::vector<Layer> getLayers() { return layers; }
 	void setName(std::string value) { name = value; }
 };

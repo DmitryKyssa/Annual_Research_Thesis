@@ -12,4 +12,5 @@ public:
 	void crossover(Net* mother, Net* father);
 	void selection();
 	void reduction();
+	void mutation();
 };
