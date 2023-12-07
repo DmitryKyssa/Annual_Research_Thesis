@@ -11,7 +11,7 @@ private:
 public:
 	Trainer(const std::string filename);
 	void getTopology(std::vector<unsigned int>& topology);
-	unsigned int getNextInputs(std::vector<double>& inputVals);
-	unsigned int getTargetOutputs(std::vector<double>& targetOutputVals);
+	size_t getNextInputs(std::vector<double>& inputVals);
+	size_t getTargetOutputs(std::vector<double>& targetOutputVals);
 	bool getEOF();
 };

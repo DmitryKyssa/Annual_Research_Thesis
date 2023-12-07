@@ -32,7 +32,7 @@ void Trainer::getTopology(std::vector<unsigned>& topology)
 	return;
 }
 
-unsigned int Trainer::getNextInputs(std::vector<double>& inputVals)
+size_t Trainer::getNextInputs(std::vector<double>& inputVals)
 {
 	inputVals.clear();
 
@@ -52,7 +52,7 @@ unsigned int Trainer::getNextInputs(std::vector<double>& inputVals)
 	return inputVals.size();
 }
 
-unsigned int Trainer::getTargetOutputs(std::vector<double>& targetOutputVals)
+size_t Trainer::getTargetOutputs(std::vector<double>& targetOutputVals)
 {
 	targetOutputVals.clear();
 

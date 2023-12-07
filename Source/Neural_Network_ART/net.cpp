@@ -9,7 +9,7 @@ Net::Net(const std::vector<unsigned int>& topology)
 		layers.push_back(Layer());
 		size_t numOutputs = i == topology.size() - 1 ? 0 : topology.at(i + 1);
 
-		for (unsigned neuronNum = 0; neuronNum <= topology.at(i); neuronNum++) {
+		for (size_t neuronNum = 0; neuronNum <= topology.at(i); neuronNum++) {
 			layers.back().push_back(Neuron(numOutputs, neuronNum));
 		}
 

@@ -1,0 +1,6 @@
+﻿  main.cpp
+  net.cpp
+E:\Annual_Research_Thesis\Source\Neural_Network_ART\net.cpp(13,56): warning C4267: 'argument': conversion from 'size_t' to 'unsigned int', possible loss of data
+  trainer.cpp
+  Generating Code...
+  Neural_Network_ART.vcxproj -> E:\Annual_Research_Thesis\Source\Neural_Network_ART\x64\Debug\Neural_Network_ART.exe
