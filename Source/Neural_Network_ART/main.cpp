@@ -80,9 +80,9 @@ int main()
 
 	std::string insert = "INSERT INTO trainingOutput (data) VALUES (?);";
 
-	exec = sqlite3_prepare_v3(database, insert.c_str(), -1, 1,&stmt, 0);
+	exec = sqlite3_prepare_v3(database, insert.c_str(), (int)insert.length(), 0, &stmt, 0);
 
-	exec = sqlite3_bind_text(stmt, 1, buffer.str().c_str(), -1, SQLITE_STATIC);
+	exec = sqlite3_bind_text(stmt, 1, buffer.str().c_str(), (int)buffer.str().length(), SQLITE_STATIC);
 
 	exec = sqlite3_step(stmt);
 
