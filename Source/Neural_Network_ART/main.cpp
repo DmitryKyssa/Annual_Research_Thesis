@@ -83,14 +83,28 @@ int main()
 
 	exec = sqlite3_prepare_v3(database, addTable.c_str(), (int)addTable.length(), 0, &stmt, 0);
 	std::cout << "Add header: " << exec << std::endl;
+	exec = sqlite3_step(stmt);
+	sqlite3_finalize(stmt);
 
-	//std::string insert = "INSERT INTO trainingOutput (data) VALUES (?);";
+	std::vector<std::string> columnsNames;
+	std::string getNumberOfColumns = "PRAGMA table_info(nn_info);";
+	exec = sqlite3_prepare_v3(database, getNumberOfColumns.c_str(), (int)getNumberOfColumns.length(), 0, &stmt, 0);
+
+	while (sqlite3_step(stmt) == SQLITE_ROW) {
+		columnsNames.push_back(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)));
+	}
+
+	//for (size_t i = 0; i < columnsNames.size(); i++) {
+	//	std::cout << columnsNames.at(i) << std::endl;
+	//}
+
+	//std::string insert = "INSERT INTO nn_info () VALUES ;";
 
 	//exec = sqlite3_prepare_v3(database, insert.c_str(), (int)insert.length(), 0, &stmt, 0);
 
 	//exec = sqlite3_bind_text(stmt, 1, buffer.str().c_str(), (int)buffer.str().length(), SQLITE_STATIC);
 
-	exec = sqlite3_step(stmt);
+	//exec = sqlite3_step(stmt);
 	std::cout << "Evaluate statement: " << exec << std::endl;
 	sqlite3_finalize(stmt);
 
