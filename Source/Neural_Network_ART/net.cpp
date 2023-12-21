@@ -7,10 +7,10 @@ Net::Net(const std::vector<unsigned int>& topology)
 	size_t numLayers = topology.size();
 	for (size_t i = 0; i < numLayers; i++) {
 		layers.push_back(Layer());
-		size_t numOutputs = i == topology.size() - 1 ? 0 : topology.at(i + 1);
+		size_t numOutputs = i == topology.size() - 1 ? 0 : topology.at(static_cast<size_t>(i) + 1);
 
 		for (size_t neuronNum = 0; neuronNum <= topology.at(i); neuronNum++) {
-			layers.back().push_back(Neuron(numOutputs, neuronNum));
+			layers.back().push_back(Neuron((unsigned int)numOutputs, (unsigned int)neuronNum));
 		}
 
 		layers.back().back().setOutput(1.0);
@@ -18,6 +18,9 @@ Net::Net(const std::vector<unsigned int>& topology)
 
 	error = 0.0;
 	previousAverageError = 0.0;
+	std::string selectedName = networksNames.back();
+	networksNames.pop_back();
+	name = selectedName;
 }
 
 Net::Net(const Net& original)

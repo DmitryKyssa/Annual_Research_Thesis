@@ -10,7 +10,7 @@ bool Trainer::getEOF()
 	return file.eof();
 }
 
-void Trainer::getTopology(std::vector<unsigned>& topology)
+void Trainer::getTopology(std::vector<unsigned int>& topology)
 {
 	std::string line;
 	std::string label;
@@ -25,7 +25,7 @@ void Trainer::getTopology(std::vector<unsigned>& topology)
 
 	while (!stream.eof())
 	{
-		unsigned n;
+		unsigned int n;
 		stream >> n;
 		topology.push_back(n);
 	}

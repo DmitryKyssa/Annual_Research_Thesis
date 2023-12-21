@@ -4,6 +4,13 @@
 #include <string>
 #include "neuron.h"
 
+static std::vector<std::string> networksNames = {
+		"Emma", "Olivia", "Ava", "Isabella", "Sophia",
+		"Mia", "Charlotte", "Amelia", "Harper", "Evelyn",
+		"Abigail", "Emily", "Elizabeth", "Sofia", "Avery",
+		"Ella", "Scarlett", "Grace", "Chloe", "Victoria"
+};
+
 class Net
 {
 private:
@@ -18,9 +25,9 @@ public:
 	void forwardPropagation(const std::vector<double>& inputVals);
 	void backPropagation(const std::vector<double>& targetVals);
 	void getResults(std::vector<double>& resultVals) const;
-	double getRecentAverageError(){ return previousAverageError; }
-	double getError(){ return error; }
+	double getRecentAverageError() { return previousAverageError; }
+	double getError() { return error; }
 	std::vector<Layer> getLayers() { return layers; }
-	void setName(std::string value) { name = value; }
+	std::string getName() { return name; }
 	Net& operator=(const Net& other);
 };

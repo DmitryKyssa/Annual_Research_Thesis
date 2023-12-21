@@ -36,8 +36,8 @@ void Genetic::mutation(size_t index)
 	srand((unsigned int)time(NULL));
 	int probability = rand() % 100;
 	if (probability < MUTATION_PROBABILITY) {
-		for (Neuron neuron : population.at(index).getLayers().at(0)) {
-			for (Synapse synapse : neuron.getOutputWeights()) {
+		for (Neuron& neuron : population.at(index).getLayers().at(0)) {
+			for (Synapse& synapse : neuron.getOutputWeights()) {
 				synapse.weight = rand() / double(RAND_MAX);
 			}
 		}
