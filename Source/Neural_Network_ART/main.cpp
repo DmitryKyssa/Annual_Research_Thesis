@@ -63,21 +63,21 @@ int main()
 
 	std::cout << "Opening: " << exec << std::endl;
 
-	std::stringstream addTable_ss;
-	addTable_ss << "CREATE TABLE IF NOT EXISTS nn_info ("
+	std::stringstream ss;
+	ss << "CREATE TABLE IF NOT EXISTS nn_info ("
 		"Name TEXT, "
 		"Error REAL";
 
 	for (size_t l = 0; l < myNet.getLayers().size(); l++) {
 		for (size_t n = 0; n < myNet.getLayers().at(l).size(); n++) {
-			addTable_ss << ", Output_of_neuron_" << (n + 1) << "_of_layer_" << (l + 1) << " REAL";
-			addTable_ss << ", Weights_of_neuron_" << (n + 1) << "_of_layer_" << (l + 1) << " TEXT";
+			ss << ", Output_of_neuron_" << (n + 1) << "_of_layer_" << (l + 1) << " REAL";
+			ss << ", Weights_of_neuron_" << (n + 1) << "_of_layer_" << (l + 1) << " TEXT";
 		}
 	}
 
-	addTable_ss << ");";
+	ss << ");";
 
-	std::string addTable = addTable_ss.str();
+	std::string addTable = ss.str();
 
 	//std::cout << addTable << std::endl;
 
@@ -98,13 +98,43 @@ int main()
 	//	std::cout << columnsNames.at(i) << std::endl;
 	//}
 
-	//std::string insert = "INSERT INTO nn_info () VALUES ;";
+	ss.str("");
+	ss << "INSERT INTO nn_info (";
+	for (size_t i = 0; i < columnsNames.size(); i++) {
+		if (i == columnsNames.size() - 1) {
+			ss << columnsNames.at(i) << ")";
+			continue;
+		}
+		ss << columnsNames.at(i) << ", ";
+	}
+	ss << " VALUES ('" << myNet.getName() << "', " << std::to_string(myNet.getError()) << ",";
+	for (size_t l = 0; l < myNet.getLayers().size(); l++) {
+		for (size_t n = 0; n < myNet.getLayers().at(l).size(); n++) {
+			ss << std::to_string(myNet.getLayers().at(l).at(n).getOutput()) << ",";
+			ss << "'";
+			if (myNet.getLayers().at(l).at(n).getOutputWeights().size() == 0) {
+				ss << " ";
+			}
+			for (size_t w = 0; w < myNet.getLayers().at(l).at(n).getOutputWeights().size(); w++) {
+				ss << " " << myNet.getLayers().at(l).at(n).getOutputWeights().at(w).weight;
+			}
+			if ((l == myNet.getLayers().size() - 1) && (n == myNet.getLayers().at(l).size() - 1)) {
+				ss << "'";
+			} else
+			ss << "',";
+		}
+	}
+	ss << ");";
+	std::cout << ss.str() << std::endl;
 
-	//exec = sqlite3_prepare_v3(database, insert.c_str(), (int)insert.length(), 0, &stmt, 0);
+	std::string insert = ss.str();
 
+	exec = sqlite3_prepare_v3(database, insert.c_str(), (int)insert.length(), 0, &stmt, 0);
+	std::cout << sqlite3_errmsg(database) << std::endl;
+	std::cout << "Add data: " << exec << std::endl;
 	//exec = sqlite3_bind_text(stmt, 1, buffer.str().c_str(), (int)buffer.str().length(), SQLITE_STATIC);
 
-	//exec = sqlite3_step(stmt);
+	exec = sqlite3_step(stmt);
 	std::cout << "Evaluate statement: " << exec << std::endl;
 	sqlite3_finalize(stmt);
 
