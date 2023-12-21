@@ -57,38 +57,32 @@ int main()
 	std::cout << std::endl << "Finish" << std::endl;
 
 	sqlite3* database;
-	//sqlite3_stmt* stmt;
+	sqlite3_stmt* stmt;
 
 	int exec = sqlite3_open("neural_network.sqlite", &database);
 
-	if (exec) {
-		std::cout << "Cannot open!" << std::endl;
-	}
-	else {
-		std::cout << "Opened!" << std::endl;
-	}
+	std::cout << "Opening: " << exec << std::endl;
 
 	std::stringstream addTable_ss;
 	addTable_ss << "CREATE TABLE IF NOT EXISTS nn_info ("
 		"Name TEXT, "
-		"Error REAL, ";
-	for (size_t l = 0; myNet.getLayers().size(); l++) {
-		for (size_t n = 0; myNet.getLayers().at(l).size(); n++) {
-			addTable_ss << "Output of neuron " << (n + 1) << " of layer " << (l + 1) << " REAL, ";
-			for (size_t w = 0; myNet.getLayers().at(l).at(n).getOutputWeights().size(); w++) {
-				addTable_ss << "Weights of neuron " << (n + 1) << " of layer " << (l + 1) << " TEXT, ";
-			}
+		"Error REAL";
+
+	for (size_t l = 0; l < myNet.getLayers().size(); l++) {
+		for (size_t n = 0; n < myNet.getLayers().at(l).size(); n++) {
+			addTable_ss << ", Output_of_neuron_" << (n + 1) << "_of_layer_" << (l + 1) << " REAL";
+			addTable_ss << ", Weights_of_neuron_" << (n + 1) << "_of_layer_" << (l + 1) << " TEXT";
 		}
 	}
-		addTable_ss << ");";
 
-	char* errorMessage;
+	addTable_ss << ");";
 
 	std::string addTable = addTable_ss.str();
 
-	exec = sqlite3_exec(database, addTable.c_str(), NULL, NULL, &errorMessage);
+	//std::cout << addTable << std::endl;
 
-	std::cout << errorMessage << " " << exec << std::endl;
+	exec = sqlite3_prepare_v3(database, addTable.c_str(), (int)addTable.length(), 0, &stmt, 0);
+	std::cout << "Add header: " << exec << std::endl;
 
 	//std::string insert = "INSERT INTO trainingOutput (data) VALUES (?);";
 
@@ -96,10 +90,13 @@ int main()
 
 	//exec = sqlite3_bind_text(stmt, 1, buffer.str().c_str(), (int)buffer.str().length(), SQLITE_STATIC);
 
-	//exec = sqlite3_step(stmt);
+	exec = sqlite3_step(stmt);
+	std::cout << "Evaluate statement: " << exec << std::endl;
+	sqlite3_finalize(stmt);
 
-	//sqlite3_finalize(stmt);
-	sqlite3_close(database);
+	exec = sqlite3_close(database);
+	std::cout << "Close database: " << exec << std::endl;
+
 
 	/*Genetic genAlgo;
 
