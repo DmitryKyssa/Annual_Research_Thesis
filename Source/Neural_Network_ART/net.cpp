@@ -18,9 +18,9 @@ Net::Net(const std::vector<unsigned int>& topology)
 
 	error = 0.0;
 	previousAverageError = 0.0;
-	std::string selectedName = networksNames.back();
+	//std::string selectedName = networksNames.back();
+	name = networksNames.back();
 	networksNames.pop_back();
-	name = selectedName;
 }
 
 Net::Net(const Net& original)
