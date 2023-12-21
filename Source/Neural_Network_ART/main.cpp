@@ -65,7 +65,7 @@ int main()
 
 	std::stringstream ss;
 	ss << "CREATE TABLE IF NOT EXISTS nn_info ("
-		"Name TEXT, "
+		"Name TEXT PRIMARY KEY, "
 		"Error REAL";
 
 	for (size_t l = 0; l < myNet.getLayers().size(); l++) {
@@ -93,6 +93,7 @@ int main()
 	while (sqlite3_step(stmt) == SQLITE_ROW) {
 		columnsNames.push_back(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)));
 	}
+	sqlite3_finalize(stmt);
 
 	//for (size_t i = 0; i < columnsNames.size(); i++) {
 	//	std::cout << columnsNames.at(i) << std::endl;
@@ -130,13 +131,12 @@ int main()
 	std::string insert = ss.str();
 
 	exec = sqlite3_prepare_v3(database, insert.c_str(), (int)insert.length(), 0, &stmt, 0);
-	std::cout << sqlite3_errmsg(database) << std::endl;
 	std::cout << "Add data: " << exec << std::endl;
-	//exec = sqlite3_bind_text(stmt, 1, buffer.str().c_str(), (int)buffer.str().length(), SQLITE_STATIC);
-
 	exec = sqlite3_step(stmt);
-	std::cout << "Evaluate statement: " << exec << std::endl;
 	sqlite3_finalize(stmt);
+	
+	//exec = sqlite3_bind_text(stmt, 1, buffer.str().c_str(), (int)buffer.str().length(), SQLITE_STATIC);
+	std::cout << "Evaluate statement: " << exec << std::endl;
 
 	exec = sqlite3_close(database);
 	std::cout << "Close database: " << exec << std::endl;
