@@ -99,6 +99,12 @@ int main()
 	//	std::cout << columnsNames.at(i) << std::endl;
 	//}
 
+	//std::string checkIfRowExists = "SELECT EXISTS(SELECT 1 FROM myTbl WHERE u_tag=" + myNet.getName() +" LIMIT 1);";
+	//exec = sqlite3_prepare_v3(database, checkIfRowExists.c_str(), (int)checkIfRowExists.length(), 0, &stmt, 0);
+	//std::cout << "Check if row exists: " << exec << std::endl;
+	//sqlite3_step(stmt);
+	//sqlite3_finalize(stmt);
+
 	ss.str("");
 	ss << "INSERT INTO nn_info (";
 	for (size_t i = 0; i < columnsNames.size(); i++) {
