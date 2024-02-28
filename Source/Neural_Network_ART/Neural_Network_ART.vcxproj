@@ -144,7 +144,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="net.cpp" />
     <ClCompile Include="neuron.cpp" />
-    <ClCompile Include="tests.cpp" />
     <ClCompile Include="trainer.cpp" />
   </ItemGroup>
   <ItemGroup>

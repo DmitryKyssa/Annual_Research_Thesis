@@ -120,8 +120,7 @@ void updateNetworkInfo(std::stringstream& ss, Net& net, std::vector<std::string>
 
 int main()
 {
-	std::string result = generateString();
-	std::cout << result;
+	generateTests();
 
 	Trainer trainerFirstNetwork("DataForTraining.txt");
 	Trainer trainerSecondNetwork("DataForTraining.txt");
