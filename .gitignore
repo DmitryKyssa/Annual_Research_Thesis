@@ -31,4 +31,7 @@
 *.out
 *.app
 
-/Source/Neural_Network_ART/.vs/Neural_Network_ART/v16
+/Source/Neural_Network_ART/.vs/Neural_Network_ART/*
+/Source/Neural_Network_ART/x64/Debug/Neural_N.2a1f4f17.tlog/*
+/Source/Neural_Network_ART/x64/Debug/*
+

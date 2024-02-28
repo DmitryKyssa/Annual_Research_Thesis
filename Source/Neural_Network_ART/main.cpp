@@ -8,6 +8,7 @@
 #include "net.h"
 #include "genetic.h"
 #include "main.h"
+#include "tests.h"
 
 std::ostream& operator<<(std::ostream& out, std::vector<double>& vector) {
 	for (size_t i = 0; i < vector.size(); i++)
@@ -119,6 +120,9 @@ void updateNetworkInfo(std::stringstream& ss, Net& net, std::vector<std::string>
 
 int main()
 {
+	std::string result = generateString();
+	std::cout << result;
+
 	Trainer trainerFirstNetwork("DataForTraining.txt");
 	Trainer trainerSecondNetwork("DataForTraining.txt");
 	std::vector<unsigned int> topologyFirst, topologySecond;
@@ -224,8 +228,6 @@ int main()
 
 	exec = sqlite3_close(database);
 	std::cout << "Close database: " << exec << std::endl;
-
-
 	/*Genetic genAlgo;
 
 	genAlgo.population.push_back(myNet);*/

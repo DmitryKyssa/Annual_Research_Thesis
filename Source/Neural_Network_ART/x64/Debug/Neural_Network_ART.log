@@ -1,2 +1,1 @@
-﻿  main.cpp
-  Neural_Network_ART.vcxproj -> E:\Annual_Research_Thesis\Source\Neural_Network_ART\x64\Debug\Neural_Network_ART.exe
+﻿LINK : fatal error LNK1104: cannot open file 'E:\Sqlite\sqlite3.lib'
