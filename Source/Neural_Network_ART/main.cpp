@@ -121,7 +121,7 @@ void updateNetworkInfo(std::stringstream& ss, Net& net, std::vector<std::string>
 int main()
 {
 	generateTests();
-
+	/*
 	Trainer trainerFirstNetwork("DataForTraining.txt");
 	Trainer trainerSecondNetwork("DataForTraining.txt");
 	std::vector<unsigned int> topologyFirst, topologySecond;
@@ -157,8 +157,6 @@ int main()
 
 	std::string addTable = ss.str();
 
-	//std::cout << addTable << std::endl;
-
 	exec = sqlite3_prepare_v3(database, addTable.c_str(), (int)addTable.length(), 0, &stmt, 0);
 	std::cout << "Add header: " << exec << std::endl;
 	exec = sqlite3_step(stmt);
@@ -173,10 +171,6 @@ int main()
 	}
 	sqlite3_finalize(stmt);
 
-	//for (size_t i = 0; i < columnsNames.size(); i++) {
-	//	std::cout << columnsNames.at(i) << std::endl;
-	//}
-
 	ss.str("");
 	if (checkIfRowExistsInTable(firstNet, exec, database, stmt) == false) {
 		insertIntoTheTable(ss, columnsNames, firstNet);
@@ -189,13 +183,10 @@ int main()
 	else {
 		updateNetworkInfo(ss, firstNet, columnsNames);
 
-		//std::cout << ss.str() << std::endl;
-
 		std::string update = ss.str();
 
 		exec = sqlite3_prepare_v3(database, update.c_str(), (int)update.length(), 0, &stmt, 0);
 		std::cout << "Update data: " << exec << std::endl;
-		//std::cout << sqlite3_errmsg(database) << std::endl;
 		exec = sqlite3_step(stmt);
 		sqlite3_finalize(stmt);
 	}
@@ -227,7 +218,29 @@ int main()
 
 	exec = sqlite3_close(database);
 	std::cout << "Close database: " << exec << std::endl;
-	/*Genetic genAlgo;
+	*/
 
-	genAlgo.population.push_back(myNet);*/
+	Genetic genAlgo;
+	std::vector<unsigned int> topology = {10000, 100, 100, 1};
+	Net* myNet = new Net(topology);
+	std::cout << myNet->getName() << std::endl;
+
+	sqlite3* database;
+	sqlite3_stmt* stmt;
+
+	int exec = sqlite3_open("neural_network.sqlite", &database);
+
+	std::cout << "Opening: " << exec << std::endl;
+
+	std::stringstream ss;
+
+	ss << "SELECT Id;";
+
+	char symbolForSearch = 'a';
+
+	exec = sqlite3_close(database);
+	std::cout << "Close database: " << exec << std::endl;
+
+	//std::string = 
+	//genAlgo.population.push_back(*myNet);
 }
