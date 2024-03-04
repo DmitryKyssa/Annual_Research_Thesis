@@ -13,7 +13,7 @@ Neuron::Neuron(unsigned int numOutputs, unsigned int myIndex)
 double Neuron::randomWeight() {
 	return rand() / double(RAND_MAX);
 }
-
+//TODO Rewrite all
 void Neuron::updateInputWeights(Layer& prevLayer)
 {
 	for (size_t i = 0; i < prevLayer.size(); ++i)
