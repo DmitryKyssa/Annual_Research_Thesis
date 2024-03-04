@@ -1,5 +1,6 @@
 #include "neuron.h"
 #include <cmath>
+#include <ctime>
 
 Neuron::Neuron(unsigned int numOutputs, unsigned int myIndex)
 {
@@ -10,11 +11,28 @@ Neuron::Neuron(unsigned int numOutputs, unsigned int myIndex)
 	index = myIndex;
 }
 
-double Neuron::randomWeight() {
+void Neuron::setOutput(double val) 
+{
+	output = val;
+}
+
+double Neuron::getOutput(void) const 
+{
+	return output; 
+}
+
+std::vector<Synapse> Neuron::getOutputWeights() 
+{ 
+	return outputWeights; 
+}
+
+double Neuron::randomWeight() 
+{
+	srand(time(NULL));
 	return rand() / double(RAND_MAX);
 }
-//TODO Rewrite all
-void Neuron::updateInputWeights(Layer& prevLayer)
+
+void Neuron::updateInputWeights(Layer& prevLayer) const
 {
 	for (size_t i = 0; i < prevLayer.size(); ++i)
 	{
@@ -42,6 +60,7 @@ void Neuron::calculateHiddenGradients(const Layer& nextLayer)
 	double ipwag = innerProductWeightsAndGradient(nextLayer);
 	gradient = ipwag * Neuron::sigmoidDerivative(output);
 }
+
 void Neuron::calculateOutputGradients(double targetValues)
 {
 	double delta = targetValues - output;

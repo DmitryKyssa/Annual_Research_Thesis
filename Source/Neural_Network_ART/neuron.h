@@ -20,19 +20,19 @@ private:
 	static double sigmoid(double input);
 	static double sigmoidDerivative(double sigmoid);
 	static double randomWeight();
-	double innerProductWeightsAndGradient(const Layer& nextLayer) const;
 	double output;
 	std::vector<Synapse> outputWeights;
 	unsigned int index;
 	double gradient;
 public:
 	Neuron(unsigned int numOutputs, unsigned int myIndex);
-	void setOutput(double val) { output = val; }
-	double getOutput(void) const { return output; }
-	std::vector<Synapse> getOutputWeights() { return outputWeights; }
+	void setOutput(double val);
+	double getOutput(void) const;
+	std::vector<Synapse> getOutputWeights();
 	void feedForward(const Layer& prevLayer);
+	double innerProductWeightsAndGradient(const Layer& nextLayer) const;
 	void calculateOutputGradients(double targetVals);
 	void calculateHiddenGradients(const Layer& nextLayer);
-	void updateInputWeights(Layer& prevLayer);
+	void updateInputWeights(Layer& prevLayer) const;
 	Neuron& operator=(const Neuron& other);
 };

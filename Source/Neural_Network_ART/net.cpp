@@ -18,7 +18,6 @@ Net::Net(const std::vector<unsigned int>& topology)
 
 	error = 0.0;
 	previousAverageError = 0.0;
-	//std::string selectedName = networksNames.back();
 	name = networksNames.back();
 	networksNames.pop_back();
 }
@@ -46,6 +45,26 @@ void Net::getResults(std::vector<double>& result) const
 	{
 		result.push_back(layers.back().at(i).getOutput());
 	}
+}
+
+double Net::getRecentAverageError() const
+{
+	return previousAverageError;
+}
+
+double Net::getError() const
+{
+	return error;
+}
+
+std::vector<Layer> Net::getLayers()
+{
+	return layers;
+}
+
+std::string Net::getName() 
+{ 
+	return name; 
 }
 
 void Net::backPropagation(const std::vector<double>& targetValues)

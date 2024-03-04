@@ -25,9 +25,9 @@ public:
 	void forwardPropagation(const std::vector<double>& inputVals);
 	void backPropagation(const std::vector<double>& targetVals);
 	void getResults(std::vector<double>& resultVals) const;
-	double getRecentAverageError() { return previousAverageError; }
-	double getError() { return error; }
-	std::vector<Layer> getLayers() { return layers; }
-	std::string getName() { return name; }
+	double getRecentAverageError() const;
+	double getError() const;
+	std::vector<Layer> getLayers();
+	std::string getName();
 	Net& operator=(const Net& other);
 };
