@@ -5,6 +5,7 @@
 #include "database.h"
 #include "Constants.h"
 #include "generator.h"
+#include "normalizer.h"
 
 static std::ostream& operator<<(std::ostream& out, std::vector<double>& vector) {
 	for (size_t i = 0; i < vector.size(); i++)
@@ -17,12 +18,31 @@ static std::ostream& operator<<(std::ostream& out, std::vector<double>& vector) 
 }
 
 int main() {
-	std::vector<unsigned int> topology = {2, 5, 2};
+	AlphanumericGenerator gen;
+	Database db(DATABASE);
+	std::string tableForTests = "strings";
+	std::string valueString = "STRING";
+	//std::string query = "(ID INT PRIMARY KEY NOT NULL, STRING TEXT NOT NULL);";
+
+	//db.createTable(tableForTests, query);
+
+	//tableForTests += " (ID,STRING) ";
+	//query = "";
+	//for (int i = 0; i < TESTS_NUMBER; i++) {
+	//	query = "VALUES (" + std::to_string(i + 1) + ", '" + gen() + "'); ";
+	//	db.insert(tableForTests, query);
+	//	std::cout << "String added!" << std::endl;
+	//}
+
+	std::vector<unsigned int> topology = { 100, 300, 100 };
 	Net* net = new Net(topology);
 
-	std::vector<double> input = {0.1, 0.8};
+	std::string test = db.getTestByID(tableForTests, valueString, 1);
+	StringNormalizer::normalize(test);
+
+	/*std::vector<double> input = { 0.1, 0.8 };
 	net->forwardPropagation(input);
-	std::vector<double> target = { 0, 1};
+	std::vector<double> target = { 0, 1 };
 	net->backPropagation(target);
 
 	std::cout << net->getError() << std::endl;
@@ -35,22 +55,7 @@ int main() {
 			std::cout << net->getLayers().at(i).at(j).getOutput() << " ";
 		}
 		std::cout << std::endl;
-	}
-
-	AlphanumericGenerator gen;
-	Database db(DATABASE);
-	//std::string tableForTests = "strings";
-	//std::string query = "(ID INT PRIMARY KEY NOT NULL, STRING TEXT NOT NULL);";
-
-	//db.createTable(tableForTests, query);
-
-	//tableForTests += " (ID,STRING) ";
-	//query = "";
-	//for (int i = 0; i < TESTS_NUMBER; i++) {
-	//	query = "VALUES (" + std::to_string(i + 1) + ", '" + gen() + "'); ";
-	//	db.insert(tableForTests, query);
-	//	std::cout << "String added!" << std::endl;
-	//}
+	}*/
 
 	return 0;
 }

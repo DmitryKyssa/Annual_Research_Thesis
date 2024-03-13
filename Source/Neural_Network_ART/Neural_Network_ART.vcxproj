@@ -147,6 +147,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="net.cpp" />
     <ClCompile Include="neuron.cpp" />
+    <ClCompile Include="normalizer.cpp" />
     <ClCompile Include="trainer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +160,7 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="net.h" />
     <ClInclude Include="neuron.h" />
+    <ClInclude Include="normalizer.h" />
     <ClInclude Include="tests.h" />
     <ClInclude Include="trainer.h" />
   </ItemGroup>
