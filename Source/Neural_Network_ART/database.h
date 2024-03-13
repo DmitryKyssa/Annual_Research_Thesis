@@ -2,6 +2,8 @@
 
 #include <winsqlite/winsqlite3.h>
 #include <string>
+#include <sstream>
+#include <iostream>
 
 class Database {
 public:
@@ -13,20 +15,20 @@ public:
 		sqlite3_close(db);
 	}
 
-	void createTable(const char* table, std::string& values) {
-		char* errMsg;
-		std::stringstream sql;
-		sql = "CREATE TABLE IF NOT EXISTS " << table << " " << values;
-		sqlite3_exec(db, sql.c_str(), NULL, 0, &errMsg);
+	void createTable(std::string table, std::string& values) {
+		ss << "CREATE TABLE IF NOT EXISTS " << table << " " << values;
+		sqlite3_exec(db, ss.str().c_str(), NULL, 0, &errMsg);
+		std::cout << errMsg << std::endl;
 	}
 
-	void insert(int id, const std::string& data) {
-		std::string sql = "INSERT INTO tests (ID,DATA) "  \
-			"VALUES (" + std::to_string(id) + ", '" + data + "'); ";
-		char* errMsg;
-		sqlite3_exec(db, sql.c_str(), NULL, 0, &errMsg);
+	void insert(std::string table, std::string& values) {
+		ss << "INSERT INTO " << table << " " << values;
+		sqlite3_exec(db, ss.str().c_str(), NULL, 0, &errMsg);
+		std::cout << errMsg << std::endl;
 	}
 
 private:
 	sqlite3* db;
+	char* errMsg;
+	std::stringstream ss;
 };

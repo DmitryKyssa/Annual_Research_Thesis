@@ -1,35 +1,34 @@
+#include "../Neural_Network_ART/database.h"
+#include "../Neural_Network_ART/Constants.h"
 #include <string>
 #include <random>
 #include <iostream>
-#include "../Neural_Network_ART/database.h"
-
-const int TESTS_NUMBER = 100;
-const int TEST_LENGHT = 100;
 
 class AlphanumericGenerator {
 public:
-    std::string operator()() {
-        std::string str("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
-        
-        std::random_device rd;
-        std::mt19937 generator(rd());
+	std::string operator()() {
+		std::string str("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
 
-        std::shuffle(str.begin(), str.end(), generator);
+		std::random_device rd;
+		std::mt19937 generator(rd());
 
-        return str.substr(0, 100);         
-    }
+		std::shuffle(str.begin(), str.end(), generator);
+
+		return str.substr(0, TEST_LENGHT);
+	}
 };
 
 int main() {
-    AlphanumericGenerator gen;
-    Database db("test.sqlite");
+	AlphanumericGenerator gen;
+	Database db(DATABASE);
+	std::string tableForTests = "strings";
 
-    db.createTable("string", "(ID INT PRIMARY KEY NOT NULL, DATA TEXT NOT NULL);");
+	db.createTable(tableForTests, "(ID INT PRIMARY KEY NOT NULL, STRING TEXT NOT NULL);");
 
-    for (int i = 0; i < 100; i++) {
-        db.insert(i, gen());
-    }
+	for (int i = 0; i < TESTS_NUMBER; i++) {
+		db.insert(tableForTests + " (ID,DATA) ", "VALUES (" + std::to_string(i + 1) + ", '" + gen() + "'); ");
+		std::cout << "String added!" << std::endl;
+	}
 
-    return 0;
+	return 0;
 }
-
