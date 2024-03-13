@@ -140,6 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Tests_ART\tests.cpp" />
     <ClCompile Include="database.cpp" />
     <ClCompile Include="genetic.cpp" />
     <ClCompile Include="main.cpp" />

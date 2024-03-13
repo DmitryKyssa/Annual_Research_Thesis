@@ -2,6 +2,8 @@
 #include <vector>
 #include <cstdlib>
 #include "net.h"
+#include "database.h"
+#include "Constants.h"
 
 std::ostream& operator<<(std::ostream& out, std::vector<double>& vector) {
 	for (size_t i = 0; i < vector.size(); i++)

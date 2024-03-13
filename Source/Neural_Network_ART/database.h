@@ -7,25 +7,13 @@
 
 class Database {
 public:
-	Database(const char* filename) {
-		sqlite3_open(filename, &db);
-	}
+	Database(const char* filename);
 
-	~Database() {
-		sqlite3_close(db);
-	}
+	~Database();
 
-	void createTable(std::string table, std::string& values) {
-		ss << "CREATE TABLE IF NOT EXISTS " << table << " " << values;
-		sqlite3_exec(db, ss.str().c_str(), NULL, 0, &errMsg);
-		std::cout << errMsg << std::endl;
-	}
+	void createTable(std::string& table, std::string& values);
 
-	void insert(std::string table, std::string& values) {
-		ss << "INSERT INTO " << table << " " << values;
-		sqlite3_exec(db, ss.str().c_str(), NULL, 0, &errMsg);
-		std::cout << errMsg << std::endl;
-	}
+	void insert(std::string& table, std::string& values);
 
 private:
 	sqlite3* db;

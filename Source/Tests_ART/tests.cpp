@@ -1,5 +1,5 @@
-#include "../Neural_Network_ART/database.h"
-#include "../Neural_Network_ART/Constants.h"
+#include "database.h"
+#include "Constants.h"
 #include <string>
 #include <random>
 #include <iostream>
@@ -22,11 +22,15 @@ int main() {
 	AlphanumericGenerator gen;
 	Database db(DATABASE);
 	std::string tableForTests = "strings";
+	std::string query = "(ID INT PRIMARY KEY NOT NULL, STRING TEXT NOT NULL);";
 
-	db.createTable(tableForTests, "(ID INT PRIMARY KEY NOT NULL, STRING TEXT NOT NULL);");
+	db.createTable(tableForTests, query);
 
+	tableForTests += " (ID,DATA) ";
+	query = "";
 	for (int i = 0; i < TESTS_NUMBER; i++) {
-		db.insert(tableForTests + " (ID,DATA) ", "VALUES (" + std::to_string(i + 1) + ", '" + gen() + "'); ");
+		query = "VALUES (" + std::to_string(i + 1) + ", '" + gen() + "'); ";
+		db.insert(tableForTests, query);
 		std::cout << "String added!" << std::endl;
 	}
 

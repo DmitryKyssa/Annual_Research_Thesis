@@ -1,0 +1,5 @@
+﻿  tests.cpp
+database.obj : error LNK2019: unresolved external symbol sqlite3_close referenced in function "public: __cdecl Database::~Database(void)" (??1Database@@QEAA@XZ)
+database.obj : error LNK2019: unresolved external symbol sqlite3_exec referenced in function "public: void __cdecl Database::createTable(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &)" (?createTable@Database@@QEAAXAEAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0@Z)
+database.obj : error LNK2019: unresolved external symbol sqlite3_open referenced in function "public: __cdecl Database::Database(char const *)" (??0Database@@QEAA@PEBD@Z)
+E:\Other\Annual_Research_Thesis\Source\Neural_Network_ART\x64\Debug\Tests_ART.exe : fatal error LNK1120: 3 unresolved externals
