@@ -6,5 +6,6 @@ class StringNormalizer
 {
 public:
 	static std::vector<double> normalize(std::string str);
+	static std::vector<double> findTarget(std::vector<double> normalized, char symbol);
 };
 

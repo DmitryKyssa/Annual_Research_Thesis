@@ -34,15 +34,14 @@ int main() {
 	//	std::cout << "String added!" << std::endl;
 	//}
 
-	std::vector<unsigned int> topology = { 100, 300, 100 };
+	std::vector<unsigned int> topology = { 62, 300, 62 };
 	Net* net = new Net(topology);
 
 	std::string test = db.getTestByID(tableForTests, valueString, 1);
-	StringNormalizer::normalize(test);
-
-	/*std::vector<double> input = { 0.1, 0.8 };
+	std::vector<double> input = StringNormalizer::normalize(test);
+	std::vector<double> target = StringNormalizer::findTarget(input, 'o');
+	std::cout << target << std::endl;
 	net->forwardPropagation(input);
-	std::vector<double> target = { 0, 1 };
 	net->backPropagation(target);
 
 	std::cout << net->getError() << std::endl;
@@ -55,7 +54,7 @@ int main() {
 			std::cout << net->getLayers().at(i).at(j).getOutput() << " ";
 		}
 		std::cout << std::endl;
-	}*/
+	}
 
 	return 0;
 }
