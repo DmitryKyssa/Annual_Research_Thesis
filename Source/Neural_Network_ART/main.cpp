@@ -17,11 +17,6 @@ int main() {
 	std::vector<unsigned int> topology = {2, 5, 2};
 	Net* net = new Net(topology);
 
-
-	//do
-	//{
-
-	//} while ();
 	std::vector<double> input = {0.1, 0.8};
 	net->forwardPropagation(input);
 	std::vector<double> target = { 0, 1};
