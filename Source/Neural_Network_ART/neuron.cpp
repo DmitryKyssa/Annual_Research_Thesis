@@ -28,7 +28,7 @@ std::vector<Synapse> Neuron::getOutputWeights()
 
 double Neuron::randomWeight() 
 {
-	srand(time(NULL));
+	srand(time((time_t*)NULL));
 	return rand() / double(RAND_MAX);
 }
 

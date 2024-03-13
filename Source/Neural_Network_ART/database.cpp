@@ -14,11 +14,17 @@ Database::~Database() {
 void Database::createTable(std::string& table, std::string& values) {
 	ss << "CREATE TABLE IF NOT EXISTS " << table << " " << values;
 	sqlite3_exec(db, ss.str().c_str(), NULL, 0, &errMsg);
-	std::cout << errMsg << std::endl;
+	if (errMsg != NULL) {
+		std::cout << errMsg << std::endl;
+	}
+	ss.str("");
 }
 
 void Database::insert(std::string& table, std::string& values) {
 	ss << "INSERT INTO " << table << " " << values;
 	sqlite3_exec(db, ss.str().c_str(), NULL, 0, &errMsg);
-	std::cout << errMsg << std::endl;
+	if (errMsg != NULL) {
+		std::cout << errMsg << std::endl;
+	}
+	ss.str("");
 }

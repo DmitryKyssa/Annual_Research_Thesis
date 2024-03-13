@@ -4,8 +4,9 @@
 #include "net.h"
 #include "database.h"
 #include "Constants.h"
+#include "generator.h"
 
-std::ostream& operator<<(std::ostream& out, std::vector<double>& vector) {
+static std::ostream& operator<<(std::ostream& out, std::vector<double>& vector) {
 	for (size_t i = 0; i < vector.size(); i++)
 	{
 		out << vector.at(i) << " ";
@@ -35,4 +36,21 @@ int main() {
 		}
 		std::cout << std::endl;
 	}
+
+	AlphanumericGenerator gen;
+	Database db(DATABASE);
+	//std::string tableForTests = "strings";
+	//std::string query = "(ID INT PRIMARY KEY NOT NULL, STRING TEXT NOT NULL);";
+
+	//db.createTable(tableForTests, query);
+
+	//tableForTests += " (ID,STRING) ";
+	//query = "";
+	//for (int i = 0; i < TESTS_NUMBER; i++) {
+	//	query = "VALUES (" + std::to_string(i + 1) + ", '" + gen() + "'); ";
+	//	db.insert(tableForTests, query);
+	//	std::cout << "String added!" << std::endl;
+	//}
+
+	return 0;
 }

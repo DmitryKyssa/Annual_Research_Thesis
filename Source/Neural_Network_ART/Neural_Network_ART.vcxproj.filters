@@ -33,7 +33,10 @@
     <ClCompile Include="database.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Tests_ART\tests.cpp">
+    <ClCompile Include="generator.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="generator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

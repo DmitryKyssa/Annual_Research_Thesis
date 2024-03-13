@@ -140,8 +140,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Tests_ART\tests.cpp" />
     <ClCompile Include="database.cpp" />
+    <ClCompile Include="generator.cpp" />
+    <ClCompile Include="generator.h" />
     <ClCompile Include="genetic.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="net.cpp" />
