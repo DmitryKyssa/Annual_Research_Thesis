@@ -8,6 +8,7 @@ Net::Net(const std::vector<unsigned int>& topology)
 	for (size_t i = 0; i < numLayers; i++) {
 		layers.push_back(Layer());
 		size_t numOutputs = i == topology.size() - 1 ? 0 : topology.at(static_cast<size_t>(i) + 1);
+		std::cout << "Number of outputs:" << numOutputs << std::endl;
 
 		for (size_t neuronNum = 0; neuronNum <= topology.at(i); neuronNum++) {
 			layers.back().push_back(Neuron((unsigned int)numOutputs, (unsigned int)neuronNum));
@@ -62,9 +63,9 @@ std::vector<Layer> Net::getLayers()
 	return layers;
 }
 
-std::string Net::getName() 
-{ 
-	return name; 
+std::string Net::getName()
+{
+	return name;
 }
 
 void Net::backPropagation(const std::vector<double>& targetValues)
@@ -118,9 +119,9 @@ void Net::forwardPropagation(const std::vector<double>& inputs)
 		layers.at(0).at(i).setOutput(inputs.at(i));
 	}
 
-	for (size_t i = 1; i < layers.size(); ++i) {
+	for (size_t i = 1; i < layers.size(); i++) {
 		Layer& prevLayer = layers.at(i - 1);
-		for (size_t j = 0; j < layers.at(i).size() - 1; ++j) {
+		for (size_t j = 0; j < layers.at(i).size() - 1; j++) {
 			layers.at(i).at(j).feedForward(prevLayer);
 		}
 	}

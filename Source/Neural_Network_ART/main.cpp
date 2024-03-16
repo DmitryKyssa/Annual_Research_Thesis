@@ -50,7 +50,7 @@ int main() {
 	size_t i = 0;
 	std::string result = "";
 	//while (result.find('o') == -1)
-	while(i < 100)
+	while(i < 10)
 	{
 		net->forwardPropagation(input);
 		net->backPropagation(target);

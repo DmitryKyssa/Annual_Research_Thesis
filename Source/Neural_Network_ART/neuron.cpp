@@ -1,6 +1,5 @@
 #include "neuron.h"
 #include <cmath>
-#include <ctime>
 #include <iostream>
 
 Neuron::Neuron(unsigned int numOutputs, unsigned int myIndex)
