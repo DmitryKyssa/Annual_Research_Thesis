@@ -18,6 +18,11 @@ static std::ostream& operator<<(std::ostream& out, std::vector<double>& vector) 
 }
 
 int main() {
+	//for (int i = 0; i < 100; i++) {
+	//	double x = rand() / double(RAND_MAX);
+	//	std::cout << x << std::endl;
+	//}
+
 	AlphanumericGenerator gen;
 	Database db(DATABASE);
 	std::string tableForTests = "strings";

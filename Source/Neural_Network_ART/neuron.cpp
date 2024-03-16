@@ -1,6 +1,7 @@
 #include "neuron.h"
 #include <cmath>
 #include <ctime>
+#include <iostream>
 
 Neuron::Neuron(unsigned int numOutputs, unsigned int myIndex)
 {
@@ -28,8 +29,8 @@ std::vector<Synapse> Neuron::getOutputWeights()
 
 double Neuron::randomWeight() 
 {
-	srand(time((time_t*)NULL));
-	return rand() / double(RAND_MAX);
+	double x = rand() / double(RAND_MAX);
+	return x;
 }
 
 void Neuron::updateInputWeights(Layer& prevLayer) const
@@ -87,6 +88,7 @@ void Neuron::feedForward(const Layer& previousLayer)
 	}
 
 	output = Neuron::sigmoid(innerProduct);
+	std::cout << "Output: " << output << std::endl;
 }
 
 Neuron& Neuron::operator=(const Neuron& other) {

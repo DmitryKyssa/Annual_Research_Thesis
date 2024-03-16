@@ -27,7 +27,7 @@ std::vector<double> StringNormalizer::findTarget(std::vector<double> normalized,
 		std::cout << "Value " << symbol << " not found in vector." << std::endl;
 	}
 
-	output.at(position) = 1.0;
+	output.at(position) = 1.0 / symbol;
 
 	return output;
 }
