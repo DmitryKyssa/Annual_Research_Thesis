@@ -27,10 +27,9 @@ int main() {
 	Database db(DATABASE);
 	std::string tableForTests = "strings";
 	std::string valueString = "STRING";
+
 	//std::string query = "(ID INT PRIMARY KEY NOT NULL, STRING TEXT NOT NULL);";
-
 	//db.createTable(tableForTests, query);
-
 	//tableForTests += " (ID,STRING) ";
 	//query = "";
 	//for (int i = 0; i < TESTS_NUMBER; i++) {
@@ -39,26 +38,40 @@ int main() {
 	//	std::cout << "String added!" << std::endl;
 	//}
 
-	std::vector<unsigned int> topology = { 62, 300, 62 };
+	std::vector<unsigned int> topology = { 62, 100, 62 };
 	Net* net = new Net(topology);
 
 	std::string test = db.getTestByID(tableForTests, valueString, 1);
+	//std::string str = "afZ";
 	std::vector<double> input = StringNormalizer::normalize(test);
-	std::vector<double> target = StringNormalizer::findTarget(input, 'o');
+	std::vector<double> target = StringNormalizer::findTarget(input, 'o', net->getLayers().back().size());
 	std::cout << target << std::endl;
-	net->forwardPropagation(input);
-	net->backPropagation(target);
 
-	std::cout << net->getError() << std::endl;
-
-	for (size_t i = 0; i < net->getLayers().size(); i++)
+	size_t i = 0;
+	std::string result = "";
+	//while (result.find('o') == -1)
+	while(i < 100)
 	{
-		std::cout << "Layer #" << i + 1 << std::endl;
-		for (size_t j = 0; j < net->getLayers().at(i).size(); j++)
+		net->forwardPropagation(input);
+		net->backPropagation(target);
+		for (size_t j = 0; j < input.size(); j++)
 		{
-			std::cout << net->getLayers().at(i).at(j).getOutput() << " ";
+			input.at(j) = net->getLayers().back().at(j).getOutput();
 		}
+		for (size_t j = 0; j < net->getLayers().size(); j++)
+		{
+			std::cout << "Layer #" << j + 1 << std::endl;
+			for (size_t k = 0; k < net->getLayers().at(j).size(); k++)
+			{
+				std::cout << net->getLayers().at(j).at(k).getOutput() << " ";
+			}
+			std::cout << std::endl;
+		}
+		result = StringNormalizer::convertToString(input);
+		std::cout << "Converted string: " << result << std::endl;
+		std::cout << "Error " << i + 1 << ": " << net->getError() << std::endl;
 		std::cout << std::endl;
+		i++;
 	}
 
 	return 0;

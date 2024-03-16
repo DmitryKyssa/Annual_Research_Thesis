@@ -88,7 +88,7 @@ void Neuron::feedForward(const Layer& previousLayer)
 	}
 
 	output = Neuron::sigmoid(innerProduct);
-	std::cout << "Output: " << output << std::endl;
+	//std::cout << "Output: " << output << std::endl;
 }
 
 Neuron& Neuron::operator=(const Neuron& other) {
