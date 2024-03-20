@@ -24,7 +24,7 @@ public:
 	Net(const Net& original);
 	void forwardPropagation(const std::vector<double>& inputVals);
 	void backPropagation(const std::vector<double>& targetVals);
-	void getResults(std::vector<double>& resultVals) const;
+	std::vector<double> getResults() const;
 	double getRecentAverageError() const;
 	double getError() const;
 	std::vector<Layer> getLayers();

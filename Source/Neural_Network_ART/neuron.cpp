@@ -28,8 +28,7 @@ std::vector<Synapse> Neuron::getOutputWeights()
 
 double Neuron::randomWeight() 
 {
-	double x = rand() / double(RAND_MAX);
-	return x;
+	return rand() / double(RAND_MAX);
 }
 
 void Neuron::updateInputWeights(Layer& prevLayer) const
@@ -61,9 +60,9 @@ void Neuron::calculateHiddenGradients(const Layer& nextLayer)
 	gradient = ipwag * Neuron::sigmoidDerivative(output);
 }
 
-void Neuron::calculateOutputGradients(double targetValues)
+void Neuron::calculateOutputGradients(double targetValue)
 {
-	double delta = targetValues - output;
+	double delta = targetValue - output;
 	gradient = delta * Neuron::sigmoidDerivative(output);
 }
 
@@ -87,10 +86,11 @@ void Neuron::feedForward(const Layer& previousLayer)
 	}
 
 	output = Neuron::sigmoid(innerProduct);
-	//std::cout << "Output: " << output << std::endl;
 }
 
-Neuron& Neuron::operator=(const Neuron& other) {
+Neuron& Neuron::operator=(const Neuron& other) 
+{
+	output = other.output;
 	outputWeights = other.outputWeights;
 	return *this;
 }

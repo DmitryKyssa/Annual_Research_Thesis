@@ -1,6 +1,7 @@
 #include "normalizer.h"
 #include <iostream>
 #include <algorithm>
+#include <cstring>
 
 std::vector<double> StringNormalizer::normalize(std::string& str)
 {
@@ -14,7 +15,7 @@ std::vector<double> StringNormalizer::normalize(std::string& str)
 	return normalized;
 }
 
-std::vector<double> StringNormalizer::findTarget(std::vector<double>& normalized, char symbol, int outputLayerSize)
+std::vector<double> StringNormalizer::findOneChar(std::vector<double>& normalized, char symbol, int outputLayerSize)
 {
 	std::vector<double> output(outputLayerSize, 0.0);
 	std::vector<double>::iterator it = std::find(normalized.begin(), normalized.end(), 1.0 / symbol);
@@ -28,6 +29,28 @@ std::vector<double> StringNormalizer::findTarget(std::vector<double>& normalized
 	}
 
 	output.at(position) = 1.0 / symbol;
+
+	return output;
+}
+
+std::vector<double> StringNormalizer::findSubstring(std::string& str, std::string& substr, int outputLayerSize)
+{
+	std::vector<double> output(outputLayerSize, 0.0);
+
+	size_t firstIndex = str.find(substr);
+
+	if (firstIndex != -1 ) {
+		std::cout << "Substring '" << substr << "' was found and starts from position: " << firstIndex << std::endl;
+	}
+	else {
+		std::cout << "Substring '" << substr << "' was not found!" << std::endl;
+	}
+
+	for (size_t i = 0; i < substr.size(); i++)
+	{
+		output.at(firstIndex) = 1.0 / substr[i];
+		firstIndex++;
+	}
 
 	return output;
 }

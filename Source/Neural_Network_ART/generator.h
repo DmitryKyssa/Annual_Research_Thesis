@@ -6,7 +6,7 @@
 
 class AlphanumericGenerator {
 public:
-	inline std::string operator()() {
+	std::string operator()() {
 		std::string str("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
 
 		std::random_device rd;

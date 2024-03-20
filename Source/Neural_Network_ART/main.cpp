@@ -38,27 +38,28 @@ int main() {
 	//	std::cout << "String added!" << std::endl;
 	//}
 
-	std::vector<unsigned int> topology = { 62, 100, 62 };
+	std::string test = db.getTestByID(tableForTests, valueString, 1);
+	std::string str = "Hello world";
+	char search = str[0];
+	std::string substr = str.substr(1, 11);
+
+	std::vector<unsigned int> topology = {(unsigned int)str.length(), 20, (unsigned int)str.length()};
 	Net* net = new Net(topology);
 
-	std::string test = db.getTestByID(tableForTests, valueString, 1);
-	//std::string str = "afZ";
-	std::vector<double> input = StringNormalizer::normalize(test);
-	std::vector<double> target = StringNormalizer::findTarget(input, 'o', net->getLayers().back().size());
-	std::cout << target << std::endl;
+	std::vector<double> input = StringNormalizer::normalize(str);
+	//std::vector<double> target = StringNormalizer::findOneChar(input, search, net->getLayers().back().size());
+	std::vector<double> target = StringNormalizer::findSubstring(str, substr, net->getLayers().back().size());
+	std::cout << "Targets: " << target << std::endl;
 
 	size_t i = 0;
 	std::string result = "";
-	//while (result.find('o') == -1)
-	while(i < 10)
+	while(result.find(substr) == -1)
+	//while (result.find(search) == -1)
+	//while(i < 20)
 	{
 		net->forwardPropagation(input);
 		net->backPropagation(target);
-		for (size_t j = 0; j < input.size(); j++)
-		{
-			input.at(j) = net->getLayers().back().at(j).getOutput();
-		}
-		for (size_t j = 0; j < net->getLayers().size(); j++)
+		for (size_t j = 2; j < net->getLayers().size(); j++)
 		{
 			std::cout << "Layer #" << j + 1 << std::endl;
 			for (size_t k = 0; k < net->getLayers().at(j).size(); k++)
@@ -67,7 +68,8 @@ int main() {
 			}
 			std::cout << std::endl;
 		}
-		result = StringNormalizer::convertToString(input);
+		std::vector<double> outputNeurons = net->getResults();
+		result = StringNormalizer::convertToString(outputNeurons);
 		std::cout << "Converted string: " << result << std::endl;
 		std::cout << "Error " << i + 1 << ": " << net->getError() << std::endl;
 		std::cout << std::endl;

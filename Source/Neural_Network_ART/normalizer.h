@@ -6,7 +6,8 @@ class StringNormalizer
 {
 public:
 	static std::vector<double> normalize(std::string& str);
-	static std::vector<double> findTarget(std::vector<double>& normalized, char symbol, int outputLayerSize);
+	static std::vector<double> findOneChar(std::vector<double>& normalized, char symbol, int outputLayerSize);
+	static std::vector<double> findSubstring(std::string& str, std::string& substr, int outputLayerSize);
 	static std::string convertToString(std::vector<double>& doubles);
 };
 

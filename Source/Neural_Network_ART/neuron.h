@@ -15,8 +15,8 @@ typedef std::vector<Neuron> Layer;
 class Neuron
 {
 private:
-	const double trainingRate = 0.15; 
-	const double alpha = 0.5; 
+	const double trainingRate = 1; 
+	const double alpha = 0.65; 
 	static double sigmoid(double input);
 	static double sigmoidDerivative(double sigmoid);
 	static double randomWeight();
@@ -31,7 +31,7 @@ public:
 	std::vector<Synapse> getOutputWeights();
 	void feedForward(const Layer& prevLayer);
 	double innerProductWeightsAndGradient(const Layer& nextLayer) const;
-	void calculateOutputGradients(double targetVals);
+	void calculateOutputGradients(double targetValue);
 	void calculateHiddenGradients(const Layer& nextLayer);
 	void updateInputWeights(Layer& prevLayer) const;
 	Neuron& operator=(const Neuron& other);

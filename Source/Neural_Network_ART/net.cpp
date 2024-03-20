@@ -7,7 +7,7 @@ Net::Net(const std::vector<unsigned int>& topology)
 	size_t numLayers = topology.size();
 	for (size_t i = 0; i < numLayers; i++) {
 		layers.push_back(Layer());
-		size_t numOutputs = i == topology.size() - 1 ? 0 : topology.at(static_cast<size_t>(i) + 1);
+		size_t numOutputs = i == topology.size() - 1 ? 0 : topology.at(i + 1);
 		std::cout << "Number of outputs:" << numOutputs << std::endl;
 
 		for (size_t neuronNum = 0; neuronNum <= topology.at(i); neuronNum++) {
@@ -38,14 +38,16 @@ Net& Net::operator=(const Net& other)
 	return *this;
 }
 
-void Net::getResults(std::vector<double>& result) const
+std::vector<double> Net::getResults() const
 {
-	result.clear();
+	std::vector<double> result(layers.back().size() - 1);
 
 	for (size_t i = 0; i < layers.back().size() - 1; ++i)
 	{
 		result.push_back(layers.back().at(i).getOutput());
 	}
+
+	return result;
 }
 
 double Net::getRecentAverageError() const
