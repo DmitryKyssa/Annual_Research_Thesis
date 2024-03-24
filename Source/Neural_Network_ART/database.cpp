@@ -3,6 +3,7 @@
 
 Database::Database(const char* filename) {
 	sqlite3_open(filename, &db);
+	stmt = NULL;
 	errMsg = NULL;
 	std::cout << "Database is opened!" << std::endl;
 }

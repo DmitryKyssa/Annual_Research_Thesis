@@ -6,7 +6,7 @@
 
 class AlphanumericGenerator {
 public:
-	std::string operator()() {
+	std::string operator()() { //TODO Rewrite
 		std::string str("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
 
 		std::random_device rd;

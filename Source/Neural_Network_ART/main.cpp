@@ -18,11 +18,6 @@ static std::ostream& operator<<(std::ostream& out, std::vector<double>& vector) 
 }
 
 int main() {
-	//for (int i = 0; i < 100; i++) {
-	//	double x = rand() / double(RAND_MAX);
-	//	std::cout << x << std::endl;
-	//}
-
 	AlphanumericGenerator gen;
 	Database db(DATABASE);
 	std::string tableForTests = "strings";
@@ -38,7 +33,7 @@ int main() {
 	//	std::cout << "String added!" << std::endl;
 	//}
 
-	std::string test = db.getTestByID(tableForTests, valueString, 1);
+	//std::string test = db.getTestByID(tableForTests, valueString, 1);
 	std::string str = "Hello world";
 	char search = str[0];
 	std::string substr = str.substr(1, 11);
