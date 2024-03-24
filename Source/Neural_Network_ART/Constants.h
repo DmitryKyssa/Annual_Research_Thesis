@@ -3,4 +3,3 @@
 
 const char* DATABASE = "neuralNetwork.sqlite";
 const int TESTS_NUMBER = 100000;
-const int TEST_LENGHT = 100;
