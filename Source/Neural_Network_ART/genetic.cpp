@@ -1,7 +1,6 @@
 #include "genetic.h"
 #include <algorithm>
 #include <cstdlib>
-#include <ctime>
 #include <iostream>
 
 std::vector<Net> Genetic::population;
@@ -37,11 +36,14 @@ void Genetic::reduction()
 
 void Genetic::mutation(size_t index)
 {
-	srand((unsigned int)time(NULL));
 	int probability = rand() % 100;
+	//std::cout << probability << std::endl;
 	if (probability < MUTATION_PROBABILITY) {
-		for (Neuron& neuron : population.at(index).getLayers().at(0)) {
-			for (Synapse& synapse : neuron.getOutputWeights()) {
+		//std::cout << "Mutation!" << std::endl;
+		auto layers = population.at(index).getLayers();
+		for (Neuron& neuron : layers.at(0)) {
+			auto outputWeights = neuron.getOutputWeights();
+			for (Synapse& synapse : outputWeights) {
 				synapse.weight = rand() / double(RAND_MAX);
 			}
 		}

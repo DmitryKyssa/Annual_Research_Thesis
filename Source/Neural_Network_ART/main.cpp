@@ -62,7 +62,7 @@ int main() {
 	std::string result = "";
 	//while (result.find(substr) == -1)
 	//while (result.find(search) == -1)
-	while (epoch < 1000)
+	//while (epoch < 1000)
 	{
 		std::cout << "Epoch #" << epoch + 1 << std::endl;
 		while (Genetic::population.size() < MAX_POPULATION)
@@ -74,12 +74,18 @@ int main() {
 		{
 			Genetic::mutation(i);
 		}
-		std::cout << "Mutation" << std::endl;
 		Genetic::selection();
 		std::cout << "Selection" << std::endl;
 		Genetic::reduction();
 		std::cout << "Population size after reduction: " << Genetic::population.size() << std::endl;
-		Net bestNet = Genetic::population.back();
+		Net bestNet = Genetic::population.front();
+		for (size_t i = 0; i < 1000; i++) {
+			bestNet.forwardPropagation(input);
+			bestNet.backPropagation(target);
+		}
+		*firstNet = bestNet;
+		*secondNet = Genetic::population.back();
+		std::cout << "Best net:" << std::endl;
 		for (size_t j = 2; j < bestNet.getLayers().size(); j++)
 		{
 			std::cout << "Layer #" << j + 1 << std::endl;
