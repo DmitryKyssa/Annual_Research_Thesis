@@ -4,11 +4,9 @@
 #include <string>
 #include <sstream>
 
-const char* DATABASE = "neuralNetwork.sqlite";
-
 class Database {
 public:
-	Database(const char* filename);
+	Database();
 
 	~Database();
 
@@ -18,6 +16,7 @@ public:
 
 	std::string getTestByID(std::string& table, std::string& selection, int rowid);
 
+	const char* DATABASE = "neuralNetwork.sqlite";
 private:
 	sqlite3* db;
 	sqlite3_stmt* stmt;

@@ -8,7 +8,21 @@ static std::vector<std::string> networksNames = {
 		"Emma", "Olivia", "Ava", "Isabella", "Sophia",
 		"Mia", "Charlotte", "Amelia", "Harper", "Evelyn",
 		"Abigail", "Emily", "Elizabeth", "Sofia", "Avery",
-		"Ella", "Scarlett", "Grace", "Chloe", "Victoria"
+		"Ella", "Scarlett", "Grace", "Chloe", "Victoria",
+		"Riley", "Aria", "Lily", "Aubrey", "Zoey",
+		"Penelope", "Lillian", "Addison", "Layla", "Natalie",
+		"Camila", "Hannah", "Brooklyn", "Zoe", "Nora",
+		"Leah", "Savannah", "Audrey", "Claire", "Eleanor",
+		"Skylar", "Ellie", "Stella", "Paisley", "Maya",
+		"Hailey", "Aaliyah", "Kinsley", "Madelyn", "Ariana",
+		"Cora", "Alaina", "Violet", "Kylie", "Melanie",
+		"Bailey", "Caroline", "Valentina", "Ruby", "Jade",
+		"Isabel", "Alice", "Ximena", "Aurora", "Nova",
+		"Emery", "Emilia", "Autumn", "Quinn", "Nevaeh",
+		"Josephine", "Sarah", "Cora", "Sadie", "Piper",
+		"Lydia", "Alexa", "Taylor", "Katherine", "Eliana",
+		"Vivian", "Willow", "Reagan", "Brianna", "Clara",
+		"Faith", "Ashley", "Emerson", "Sophie", "Annabelle"
 };
 
 class Net

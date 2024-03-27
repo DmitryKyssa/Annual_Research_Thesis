@@ -1,8 +1,8 @@
 #include "database.h"
 #include <iostream>
 
-Database::Database(const char* filename) {
-	sqlite3_open(filename, &db);
+Database::Database() {
+	sqlite3_open(DATABASE, &db);
 	stmt = NULL;
 	errMsg = NULL;
 	std::cout << "Database is opened!" << std::endl;
@@ -43,7 +43,7 @@ std::string Database::getTestByID(std::string& table, std::string& selection, in
 	sqlite3_step(stmt);
 
 	std::string result = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
-	std::cout << result << std::endl;
+	//std::cout << result << std::endl;
 
 	ss.str("");
 	return result;
