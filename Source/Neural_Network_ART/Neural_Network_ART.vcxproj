@@ -154,7 +154,6 @@
     <Text Include="DataForTraining.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Constants.h" />
     <ClInclude Include="database.h" />
     <ClInclude Include="genetic.h" />
     <ClInclude Include="net.h" />

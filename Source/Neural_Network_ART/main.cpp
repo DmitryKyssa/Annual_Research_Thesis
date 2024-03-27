@@ -3,9 +3,10 @@
 #include <cstdlib>
 #include "net.h"
 #include "database.h"
-#include "Constants.h"
 #include "generator.h"
 #include "normalizer.h"
+
+const int TESTS_NUMBER = 100000;
 
 static std::ostream& operator<<(std::ostream& out, std::vector<double>& vector) {
 	for (size_t i = 0; i < vector.size(); i++)
@@ -22,7 +23,6 @@ int main() {
 	Database db(DATABASE);
 	std::string tableForTests = "strings";
 	std::string valueString = "STRING";
-	std::string alphanumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 	//std::string query = "(ID INT PRIMARY KEY NOT NULL, STRING TEXT NOT NULL);";
 	//db.createTable(tableForTests, query);

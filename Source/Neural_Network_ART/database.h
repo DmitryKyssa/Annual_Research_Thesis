@@ -4,6 +4,8 @@
 #include <string>
 #include <sstream>
 
+const char* DATABASE = "neuralNetwork.sqlite";
+
 class Database {
 public:
 	Database(const char* filename);
