@@ -61,12 +61,6 @@
     <ClInclude Include="genetic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="main.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="tests.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="database.h">
       <Filter>Header Files</Filter>
     </ClInclude>

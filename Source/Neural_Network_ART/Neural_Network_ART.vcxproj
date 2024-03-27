@@ -157,11 +157,9 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="database.h" />
     <ClInclude Include="genetic.h" />
-    <ClInclude Include="main.h" />
     <ClInclude Include="net.h" />
     <ClInclude Include="neuron.h" />
     <ClInclude Include="normalizer.h" />
-    <ClInclude Include="tests.h" />
     <ClInclude Include="trainer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
