@@ -33,6 +33,7 @@ private:
 	double previousAverageError;
 	const double smooth = 100.0;
 	std::string name;
+	int fitness;
 public:
 	Net(const std::vector<unsigned int>& topology);
 	Net(const Net& original);
@@ -41,7 +42,9 @@ public:
 	std::vector<double> getResults() const;
 	double getRecentAverageError() const;
 	double getError() const;
-	std::vector<Layer> getLayers();
-	std::string getName();
+	std::vector<Layer> getLayers() const;
+	std::string getName() const;
+	int getFitness() const;
+	void setFitness(int fitness);
 	Net& operator=(const Net& other);
 };

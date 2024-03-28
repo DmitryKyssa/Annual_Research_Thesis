@@ -4,7 +4,7 @@
 
 class AlphanumericGenerator {
 private:
-    std::string alphanumeric = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    std::string alphanumericsymbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 !@#$%^&*()_+{}|:<>?";
 public:
     std::string generateRandomString(int length);
 };

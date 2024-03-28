@@ -55,7 +55,7 @@ std::vector<double> StringNormalizer::findSubstring(std::string& str, std::strin
 	return output;
 }
 
-std::string StringNormalizer::convertToString(std::vector<double>& doubles)
+std::string StringNormalizer::convertToString(const std::vector<double>& doubles)
 {
 	std::string converted = "";
 	for (size_t i = 0; i < doubles.size(); i++)

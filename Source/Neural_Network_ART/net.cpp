@@ -19,6 +19,7 @@ Net::Net(const std::vector<unsigned int>& topology)
 
 	error = 0.0;
 	previousAverageError = 0.0;
+	fitness = 0;
 	name = networksNames.back();
 	networksNames.pop_back();
 }
@@ -27,6 +28,7 @@ Net::Net(const Net& original)
 {
 	layers = original.layers;
 	error = original.error;
+	fitness = original.fitness;
 	previousAverageError = original.previousAverageError;
 }
 
@@ -40,7 +42,7 @@ Net& Net::operator=(const Net& other)
 
 std::vector<double> Net::getResults() const
 {
-	std::vector<double> result(layers.back().size() - 1);
+	std::vector<double> result;
 
 	for (size_t i = 0; i < layers.back().size() - 1; ++i)
 	{
@@ -60,14 +62,24 @@ double Net::getError() const
 	return error;
 }
 
-std::vector<Layer> Net::getLayers()
+std::vector<Layer> Net::getLayers() const
 {
 	return layers;
 }
 
-std::string Net::getName()
+std::string Net::getName() const
 {
 	return name;
+}
+
+int Net::getFitness() const
+{
+	return fitness;
+}
+
+void Net::setFitness(int fitness)
+{
+	this->fitness = fitness;
 }
 
 void Net::backPropagation(const std::vector<double>& targetValues)

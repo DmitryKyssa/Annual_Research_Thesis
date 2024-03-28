@@ -22,9 +22,9 @@ static std::ostream& operator<<(std::ostream& out, std::vector<double>& vector) 
 int main() {
 	//AlphanumericGenerator gen;
 	Database db;
-	std::string tableForTests = "strings";
-	std::string valueString = "STRING";
 
+	//std::string tableForTests = "strings";
+	//std::string valueString = "STRING";
 	//std::string query = "(ID INT PRIMARY KEY NOT NULL, STRING TEXT NOT NULL);";
 	//db.createTable(tableForTests, query);
 	//tableForTests += " (ID,STRING) ";
@@ -35,89 +35,75 @@ int main() {
 	//	db.insert(tableForTests, query);
 	//	std::cout << "String added! " << i << std::endl;
 	//}
+	//std::string test = db.getTestByID(tableForTests, valueString, 1);
 
-	std::string test = db.getTestByID(tableForTests, valueString, 1);
-	std::string str = "Hello world";
-	char search = str[0];
-	//std::string substr = test.substr(5, 500);
+	/*std::string str = "I am able to pay, but I never want a triumph at any price. I never want someone's chest lying under my foot.";
+	std::string substr = " a triumph at any price. ";*/
+	std::string str = "I am able to pay, but I never want a triumph at any price.";
+	std::string substr = " a triumph at any price.";
 
-	std::vector<unsigned int> topology = { (unsigned int)str.length(), 5, (unsigned int)str.length() };
+	std::vector<unsigned int> topology = { (unsigned int)str.length(), 20, (unsigned int)str.length() };
 	Net* firstNet = new Net(topology);
 	Net* secondNet = new Net(topology);
 
 	std::vector<double> input = StringNormalizer::normalize(str);
-	std::vector<double> target = StringNormalizer::findOneChar(input, search, firstNet->getLayers().back().size());
-	//std::vector<double> target = StringNormalizer::findSubstring(test, substr, net->getLayers().back().size());
-	//std::cout << "Targets: " << target << std::endl;
-
-	firstNet->forwardPropagation(input);
-	firstNet->backPropagation(target);
-	secondNet->forwardPropagation(input);
-	secondNet->backPropagation(target);
-
-	Genetic::population.push_back(*firstNet);
-	Genetic::population.push_back(*secondNet);
+	//std::vector<double> target = StringNormalizer::findOneChar(input, search, firstNet->getLayers().back().size());
+	std::vector<double> target = StringNormalizer::findSubstring(str, substr, (unsigned int)str.length() + 1);
+	std::string convertedTarget = StringNormalizer::convertToString(target);
 
 	size_t epoch = 0;
 	std::string result = "";
-	//while (result.find(substr) == -1)
-	//while (result.find(search) == -1)
-	//while (epoch < 1000)
+	while (result.find(substr) == -1)
+		//while (result.find(search) == -1)
+		//while (epoch < 1000)
 	{
+		for (size_t i = 0; i < 200; i++) {
+			firstNet->forwardPropagation(input);
+			firstNet->backPropagation(target);
+			secondNet->forwardPropagation(input);
+			secondNet->backPropagation(target);
+		}
+		std::cout << "Pre-training finished!" << std::endl;
+
+		Genetic::population.push_back(*firstNet);
+		Genetic::population.push_back(*secondNet);
+
 		std::cout << "Epoch #" << epoch + 1 << std::endl;
 		while (Genetic::population.size() < MAX_POPULATION)
 		{
 			Genetic::crossover(firstNet, secondNet);
+			//std::cout << "Population size: " << Genetic::population.size() << std::endl;
 		}
-		std::cout << "Population size after crossover: " << Genetic::population.size() << std::endl;
 		for (size_t i = 0; i < Genetic::population.size(); i++)
 		{
-			Genetic::mutation(i);
+			std::vector<double> outputNeurons = Genetic::population.at(i).getResults();
+			std::string convertedOutput = StringNormalizer::convertToString(outputNeurons);
+			Genetic::population.at(i).setFitness(Genetic::calculateFitness(convertedOutput, convertedTarget));
 		}
 		Genetic::selection();
-		std::cout << "Selection" << std::endl;
-		Genetic::reduction();
-		std::cout << "Population size after reduction: " << Genetic::population.size() << std::endl;
-		Net bestNet = Genetic::population.front();
-		for (size_t i = 0; i < 1000; i++) {
-			bestNet.forwardPropagation(input);
-			bestNet.backPropagation(target);
-		}
-		*firstNet = bestNet;
+		*firstNet = Genetic::population.front();
 		*secondNet = Genetic::population.back();
-		std::cout << "Best net:" << std::endl;
-		for (size_t j = 2; j < bestNet.getLayers().size(); j++)
+		while (firstNet->getFitness() == 0 || secondNet->getFitness() == 0)
 		{
-			std::cout << "Layer #" << j + 1 << std::endl;
-			for (size_t k = 0; k < bestNet.getLayers().at(j).size(); k++)
-			{
-				std::cout << bestNet.getLayers().at(j).at(k).getOutput() << " ";
+			for (size_t i = 0; i < 200; i++) {
+				firstNet->forwardPropagation(input);
+				firstNet->backPropagation(target);
+				secondNet->forwardPropagation(input);
+				secondNet->backPropagation(target);
 			}
-			std::cout << std::endl;
+
+			std::string firstNetOutput = StringNormalizer::convertToString(firstNet->getResults());
+			firstNet->setFitness(Genetic::calculateFitness(firstNetOutput, convertedTarget));
+			std::string secondNetOutput = StringNormalizer::convertToString(secondNet->getResults());
+			secondNet->setFitness(Genetic::calculateFitness(secondNetOutput, convertedTarget));
 		}
-		std::vector<double> outputNeurons = bestNet.getResults();
+		std::cout << "Fitness of first net: " << firstNet->getFitness() << std::endl;
+		std::cout << "Fitness of second net: " << secondNet->getFitness() << std::endl;
+		std::vector<double> outputNeurons = firstNet->getResults();
 		result = StringNormalizer::convertToString(outputNeurons);
 		std::cout << "Converted string: " << result << std::endl;
-		std::cout << "Error: " << bestNet.getError() << std::endl;
+		std::cout << "Error: " << firstNet->getError() << std::endl;
 		std::cout << std::endl;
-
-		//firstNet->forwardPropagation(input);
-		//firstNet->backPropagation(target);
-
-		//for (size_t j = 2; j < firstNet->getLayers().size(); j++)
-		//{
-		//	std::cout << "Layer #" << j + 1 << std::endl;
-		//	for (size_t k = 0; k < firstNet->getLayers().at(j).size(); k++)
-		//	{
-		//		std::cout << firstNet->getLayers().at(j).at(k).getOutput() << " ";
-		//	}
-		//	std::cout << std::endl;
-		//}
-		//std::vector<double> outputNeurons = firstNet->getResults();
-		//result = StringNormalizer::convertToString(outputNeurons);
-		//std::cout << "Converted string: " << result << std::endl;
-		//std::cout << "Error " << i + 1 << ": " << firstNet->getError() << std::endl;
-		//std::cout << std::endl;
 		epoch++;
 	}
 

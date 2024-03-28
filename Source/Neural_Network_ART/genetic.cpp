@@ -4,27 +4,33 @@
 #include <iostream>
 
 std::vector<Net> Genetic::population;
-
+ 
 void Genetic::crossover(Net* mother, Net* father)
-{
-	Net* childBoy = new Net(*mother);
-	Net* childGirl = new Net(*father);
-
-	for (size_t i = 0; i < (*(childBoy)).getLayers().size(); i++) {
-		for (size_t j = 0; j < (*(childBoy)).getLayers().at(i).size() / 2; j++) {
-			(*(childBoy)).getLayers().at(i).at(j).getOutputWeights() =
-				father->getLayers().at(i).at(j).getOutputWeights();
-			(*(childGirl)).getLayers().at(i).at(j).getOutputWeights() =
-				mother->getLayers().at(i).at(j).getOutputWeights();
-		}
-	}
-	population.push_back(*childBoy);
-	population.push_back(*childGirl);
-}
+//{
+//	Net* childBoy = new Net(*mother);
+//	Net* childGirl = new Net(*father);
+//
+//	for (size_t i = 0; i < (*(childBoy)).getLayers().size(); i++) {
+//		for (size_t j = 0; j < (*(childBoy)).getLayers().at(i).size() / 2; j++) {
+//			(*(childBoy)).getLayers().at(i).at(j).getOutputWeights() =
+//				father->getLayers().at(i).at(j).getOutputWeights();
+//			(*(childGirl)).getLayers().at(i).at(j).getOutputWeights() =
+//				mother->getLayers().at(i).at(j).getOutputWeights();
+//		}
+//	}
+//	population.push_back(*childBoy);
+//	population.push_back(*childGirl);
+//}
 
 void Genetic::selection()
 {
-	std::sort(population.begin(), population.end(), [](Net a, Net b) {return a.getError() < b.getError(); });
+	for (size_t i = 0; i < population.size(); i++) {
+		mutation(i);
+	}
+	std::sort(population.begin(), population.end(), [](Net a, Net b) {
+		return a.getFitness() < b.getFitness();
+	});
+	reduction();
 }
 
 void Genetic::reduction()
@@ -48,4 +54,15 @@ void Genetic::mutation(size_t index)
 			}
 		}
 	}
+}
+
+int Genetic::calculateFitness(std::string convertedOutput, std::string convertedTarget)
+{
+	int fitness = 0;
+	for (size_t i = 0; i < convertedOutput.size(); i++) {
+		if (convertedOutput.at(i) == convertedTarget.at(i)) {
+			fitness++;
+		}
+	}
+	return fitness;
 }
