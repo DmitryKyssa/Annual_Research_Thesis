@@ -4,23 +4,32 @@
 #include <iostream>
 
 std::vector<Net> Genetic::population;
- 
+
 void Genetic::crossover(Net* mother, Net* father)
-//{
-//	Net* childBoy = new Net(*mother);
-//	Net* childGirl = new Net(*father);
-//
-//	for (size_t i = 0; i < (*(childBoy)).getLayers().size(); i++) {
-//		for (size_t j = 0; j < (*(childBoy)).getLayers().at(i).size() / 2; j++) {
-//			(*(childBoy)).getLayers().at(i).at(j).getOutputWeights() =
-//				father->getLayers().at(i).at(j).getOutputWeights();
-//			(*(childGirl)).getLayers().at(i).at(j).getOutputWeights() =
-//				mother->getLayers().at(i).at(j).getOutputWeights();
-//		}
-//	}
-//	population.push_back(*childBoy);
-//	population.push_back(*childGirl);
-//}
+{
+	Net firstChild = *mother;
+	Net secondChild = *father;
+	Layer firstChildInput = firstChild.getLayers().at(0);
+	Layer secondChildInputt = secondChild.getLayers().at(0);
+	for (size_t i = 0; i < firstChildInput.size(); i++) {
+		auto firstChildInputWeights = firstChildInput.at(i).getOutputWeights();
+		auto secondChildInputWeights = secondChildInputt.at(i).getOutputWeights();
+		for (size_t j = 0; j < firstChildInputWeights.size(); j++) {
+			int probability = rand() % 100;
+			if (probability < 50) {
+				firstChildInputWeights.at(j).weight = mother->getLayers().at(0).at(j).getOutputWeights().at(j).weight;
+				secondChildInputWeights.at(j).weight = father->getLayers().at(0).at(j).getOutputWeights().at(j).weight;
+			}
+			else {
+				firstChildInputWeights.at(j).weight = father->getLayers().at(0).at(j).getOutputWeights().at(j).weight;
+				secondChildInputWeights.at(j).weight = mother->getLayers().at(0).at(j).getOutputWeights().at(j).weight;
+			}
+		}
+	}
+
+	population.push_back(firstChild);
+	population.push_back(secondChild);
+}
 
 void Genetic::selection()
 {
@@ -29,7 +38,7 @@ void Genetic::selection()
 	}
 	std::sort(population.begin(), population.end(), [](Net a, Net b) {
 		return a.getFitness() < b.getFitness();
-	});
+		});
 	reduction();
 }
 
