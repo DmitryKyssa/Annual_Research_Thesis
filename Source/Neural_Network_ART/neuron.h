@@ -25,6 +25,7 @@ private:
 	unsigned int index;
 	double gradient;
 public:
+	Neuron();
 	Neuron(unsigned int numOutputs, unsigned int myIndex);
 	void setOutput(double val);
 	double getOutput(void) const;

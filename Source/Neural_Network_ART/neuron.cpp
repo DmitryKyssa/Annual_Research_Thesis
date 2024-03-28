@@ -2,6 +2,13 @@
 #include <cmath>
 #include <iostream>
 
+Neuron::Neuron()
+{
+	output = 0.0;
+	gradient = 0.0;
+	index = 0;
+}
+
 Neuron::Neuron(unsigned int numOutputs, unsigned int myIndex)
 {
 	for (unsigned int i = 0; i < numOutputs; ++i) {

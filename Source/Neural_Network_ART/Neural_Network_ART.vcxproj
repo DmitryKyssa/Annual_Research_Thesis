@@ -141,6 +141,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="database.cpp" />
+    <ClCompile Include="fileSaver.cpp" />
     <ClCompile Include="generator.cpp" />
     <ClCompile Include="generator.h" />
     <ClCompile Include="genetic.cpp" />
@@ -155,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="database.h" />
+    <ClInclude Include="fileSaver.h" />
     <ClInclude Include="genetic.h" />
     <ClInclude Include="net.h" />
     <ClInclude Include="neuron.h" />

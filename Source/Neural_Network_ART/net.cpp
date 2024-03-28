@@ -2,12 +2,12 @@
 #include <cassert>
 #include <iostream>
 
-Net::Net(const std::vector<unsigned int>& topology)
+Net::Net(const std::vector<unsigned int>& topology, std::string& name)
 {
 	size_t numLayers = topology.size();
 	for (size_t i = 0; i < numLayers; i++) {
 		layers.push_back(Layer());
-		size_t numOutputs = i == topology.size() - 1 ? 0 : topology.at(i + 1);
+		size_t numOutputs = i == topology.size() - 1 ? 1 : topology.at(i + 1);
 		//std::cout << "Number of outputs:" << numOutputs << std::endl;
 
 		for (size_t neuronNum = 0; neuronNum <= topology.at(i); neuronNum++) {
@@ -20,8 +20,7 @@ Net::Net(const std::vector<unsigned int>& topology)
 	error = 0.0;
 	previousAverageError = 0.0;
 	fitness = 0;
-	name = networksNames.back();
-	networksNames.pop_back();
+	this->name = name;
 }
 
 Net::Net(const Net& original)

@@ -35,7 +35,7 @@ private:
 	std::string name;
 	int fitness;
 public:
-	Net(const std::vector<unsigned int>& topology);
+	Net(const std::vector<unsigned int>& topology, std::string& name);
 	Net(const Net& original);
 	void forwardPropagation(const std::vector<double>& inputVals);
 	void backPropagation(const std::vector<double>& targetVals);

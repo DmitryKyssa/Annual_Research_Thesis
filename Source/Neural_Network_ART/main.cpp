@@ -2,10 +2,10 @@
 #include <vector>
 #include <cstdlib>
 #include "genetic.h"
-#include "net.h"
 #include "database.h"
 #include "generator.h"
 #include "normalizer.h"
+#include "fileSaver.h"
 
 const int TESTS_NUMBER = 100000;
 
@@ -43,13 +43,30 @@ int main() {
 	std::string substr = " a triumph at any price.";
 
 	std::vector<unsigned int> topology = { (unsigned int)str.length(), 20, (unsigned int)str.length() };
-	Net* firstNet = new Net(topology);
-	Net* secondNet = new Net(topology);
+	Net* firstNet = new Net(topology, networksNames.back());
+	networksNames.pop_back();
+	Net* secondNet = new Net(topology, networksNames.back());
+	networksNames.pop_back();
+
+	std::cout << "First net: " << firstNet->getName() << std::endl;
+	std::cout << "Second net: " << secondNet->getName() << std::endl;
 
 	std::vector<double> input = StringNormalizer::normalize(str);
 	//std::vector<double> target = StringNormalizer::findOneChar(input, search, firstNet->getLayers().back().size());
 	std::vector<double> target = StringNormalizer::findSubstring(str, substr, (unsigned int)str.length() + 1);
 	std::string convertedTarget = StringNormalizer::convertToString(target);
+
+	firstNet->forwardPropagation(input);
+	firstNet->backPropagation(target);
+	secondNet->forwardPropagation(input);
+	secondNet->backPropagation(target);
+
+	FileSaver::saveToFile(*firstNet, "firstNet.txt");
+	FileSaver::saveToFile(*secondNet, "secondNet.txt");
+	Net firstNetFromFile = FileSaver::loadFromFile("firstNet.txt");
+	Net secondNetFromFile = FileSaver::loadFromFile("secondNet.txt");
+	std::cout << "First net from file: " << firstNetFromFile.getName() << std::endl;
+	std::cout << "Second net from file: " << secondNetFromFile.getName() << std::endl;
 
 	size_t epoch = 0;
 	std::string result = "";
