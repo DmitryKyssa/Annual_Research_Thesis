@@ -11,7 +11,7 @@ private:
 	void static reduction();
 public:
 	static std::vector<Net> population;
-	void static crossover(Net* mother, Net* father);
+	void static crossover(const Net& mother, const Net& father); //TODO don't use pointers => const Net&
 	void static selection();
 	void static mutation(size_t index);
 	int static calculateFitness(std::string convertedOutput, std::string convertedTarget);

@@ -74,4 +74,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="SQLScript.sql">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

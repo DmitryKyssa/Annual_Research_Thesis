@@ -43,30 +43,30 @@ int main() {
 	std::string substr = " a triumph at any price.";
 
 	std::vector<unsigned int> topology = { (unsigned int)str.length(), 20, (unsigned int)str.length() };
-	Net* firstNet = new Net(topology, networksNames.back());
+	Net firstNet{ topology, networksNames.back() };
 	networksNames.pop_back();
-	Net* secondNet = new Net(topology, networksNames.back());
+	Net secondNet = { topology, networksNames.back() };
 	networksNames.pop_back();
 
-	std::cout << "First net: " << firstNet->getName() << std::endl;
-	std::cout << "Second net: " << secondNet->getName() << std::endl;
+	std::cout << "First net: " << firstNet.getName() << std::endl;
+	std::cout << "Second net: " << secondNet.getName() << std::endl;
 
 	std::vector<double> input = StringNormalizer::normalize(str);
-	//std::vector<double> target = StringNormalizer::findOneChar(input, search, firstNet->getLayers().back().size());
+	//std::vector<double> target = StringNormalizer::findOneChar(input, search, firstNet.getLayers().back().size());
 	std::vector<double> target = StringNormalizer::findSubstring(str, substr, (unsigned int)str.length() + 1);
 	std::string convertedTarget = StringNormalizer::convertToString(target);
 
-	firstNet->forwardPropagation(input);
-	firstNet->backPropagation(target);
-	secondNet->forwardPropagation(input);
-	secondNet->backPropagation(target);
+	firstNet.forwardPropagation(input);
+	firstNet.backPropagation(target);
+	secondNet.forwardPropagation(input);
+	secondNet.backPropagation(target);
 
-	FileSaver::saveToFile(*firstNet, "firstNet.txt");
-	FileSaver::saveToFile(*secondNet, "secondNet.txt");
-	Net firstNetFromFile = FileSaver::loadFromFile("firstNet.txt");
-	Net secondNetFromFile = FileSaver::loadFromFile("secondNet.txt");
-	std::cout << "First net from file: " << firstNetFromFile.getName() << std::endl;
-	std::cout << "Second net from file: " << secondNetFromFile.getName() << std::endl;
+	FileSaver::saveToFile(firstNet, "firstNet.txt");
+	FileSaver::saveToFile(secondNet, "secondNet.txt");
+	//Net firstNetFromFile = FileSaver::loadFromFile("firstNet.txt");
+	//Net secondNetFromFile = FileSaver::loadFromFile("secondNet.txt");
+	//std::cout << "First net from file: " << firstNetFromFile.getName() << std::endl;
+	//std::cout << "Second net from file: " << secondNetFromFile.getName() << std::endl;
 
 	size_t epoch = 0;
 	std::string result = "";
@@ -75,15 +75,15 @@ int main() {
 		//while (epoch < 1000)
 	{
 		for (size_t i = 0; i < 200; i++) {
-			firstNet->forwardPropagation(input);
-			firstNet->backPropagation(target);
-			secondNet->forwardPropagation(input);
-			secondNet->backPropagation(target);
+			firstNet.forwardPropagation(input);
+			firstNet.backPropagation(target);
+			secondNet.forwardPropagation(input);
+			secondNet.backPropagation(target);
 		}
 		std::cout << "Pre-training finished!" << std::endl;
 
-		Genetic::population.push_back(*firstNet);
-		Genetic::population.push_back(*secondNet);
+		Genetic::population.push_back(firstNet);
+		Genetic::population.push_back(secondNet);
 
 		std::cout << "Epoch #" << epoch + 1 << std::endl;
 		while (Genetic::population.size() < MAX_POPULATION)
@@ -98,28 +98,28 @@ int main() {
 			Genetic::population.at(i).setFitness(Genetic::calculateFitness(convertedOutput, convertedTarget));
 		}
 		Genetic::selection();
-		*firstNet = Genetic::population.front();
-		*secondNet = Genetic::population.back();
-		while (firstNet->getFitness() == 0 || secondNet->getFitness() == 0)
+		firstNet = Genetic::population.front();
+		secondNet = Genetic::population.back();
+		while (firstNet.getFitness() == 0 || secondNet.getFitness() == 0)
 		{
 			for (size_t i = 0; i < 200; i++) {
-				firstNet->forwardPropagation(input);
-				firstNet->backPropagation(target);
-				secondNet->forwardPropagation(input);
-				secondNet->backPropagation(target);
+				firstNet.forwardPropagation(input);
+				firstNet.backPropagation(target);
+				secondNet.forwardPropagation(input);
+				secondNet.backPropagation(target);
 			}
 
-			std::string firstNetOutput = StringNormalizer::convertToString(firstNet->getResults());
-			firstNet->setFitness(Genetic::calculateFitness(firstNetOutput, convertedTarget));
-			std::string secondNetOutput = StringNormalizer::convertToString(secondNet->getResults());
-			secondNet->setFitness(Genetic::calculateFitness(secondNetOutput, convertedTarget));
+			std::string firstNetOutput = StringNormalizer::convertToString(firstNet.getResults());
+			firstNet.setFitness(Genetic::calculateFitness(firstNetOutput, convertedTarget));
+			std::string secondNetOutput = StringNormalizer::convertToString(secondNet.getResults());
+			secondNet.setFitness(Genetic::calculateFitness(secondNetOutput, convertedTarget));
 		}
-		std::cout << "Fitness of first net: " << firstNet->getFitness() << std::endl;
-		std::cout << "Fitness of second net: " << secondNet->getFitness() << std::endl;
-		std::vector<double> outputNeurons = firstNet->getResults();
+		std::cout << "Fitness of first net: " << firstNet.getFitness() << std::endl;
+		std::cout << "Fitness of second net: " << secondNet.getFitness() << std::endl;
+		std::vector<double> outputNeurons = firstNet.getResults();
 		result = StringNormalizer::convertToString(outputNeurons);
 		std::cout << "Converted string: " << result << std::endl;
-		std::cout << "Error: " << firstNet->getError() << std::endl;
+		std::cout << "Error: " << firstNet.getError() << std::endl;
 		std::cout << std::endl;
 		epoch++;
 	}

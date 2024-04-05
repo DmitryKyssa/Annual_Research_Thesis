@@ -31,6 +31,7 @@ void Database::insert(std::string& table, std::string& values) {
 	ss.str("");
 }
 
+//TODO Delete selection
 std::string Database::getTestByID(std::string& table, std::string& selection, int rowid)
 {
 	ss << "SELECT " << selection << " FROM " << table << " WHERE rowid = " << rowid << ";";

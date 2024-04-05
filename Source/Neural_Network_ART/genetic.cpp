@@ -5,10 +5,11 @@
 
 std::vector<Net> Genetic::population;
 
-void Genetic::crossover(Net* mother, Net* father)
+//TODO One child
+void Genetic::crossover(const Net& mother, const Net& father)
 {
-	Net firstChild = *mother;
-	Net secondChild = *father;
+	Net firstChild = mother;
+	Net secondChild = father;
 	Layer firstChildInput = firstChild.getLayers().at(0);
 	Layer secondChildInputt = secondChild.getLayers().at(0);
 	for (size_t i = 0; i < firstChildInput.size(); i++) {
@@ -17,12 +18,7 @@ void Genetic::crossover(Net* mother, Net* father)
 		for (size_t j = 0; j < firstChildInputWeights.size(); j++) {
 			int probability = rand() % 100;
 			if (probability < 50) {
-				firstChildInputWeights.at(j).weight = mother->getLayers().at(0).at(j).getOutputWeights().at(j).weight;
-				secondChildInputWeights.at(j).weight = father->getLayers().at(0).at(j).getOutputWeights().at(j).weight;
-			}
-			else {
-				firstChildInputWeights.at(j).weight = father->getLayers().at(0).at(j).getOutputWeights().at(j).weight;
-				secondChildInputWeights.at(j).weight = mother->getLayers().at(0).at(j).getOutputWeights().at(j).weight;
+				std::swap(firstChildInput.at(j), secondChildInputt.at(j));
 			}
 		}
 	}
@@ -33,9 +29,17 @@ void Genetic::crossover(Net* mother, Net* father)
 
 void Genetic::selection()
 {
-	for (size_t i = 0; i < population.size(); i++) {
-		mutation(i);
+	std::vector<Net> result;
+	//Generate new networks
+	for (auto const& net : population) {
+		result.push_back(mutation(net));
 	}
+	//Test networks
+	for (auto const& net : result) {
+		test(net);
+	}
+	//Remove bad networks
+	std::copy(result.begin(), result.end(), std::back_inserter(population));
 	std::sort(population.begin(), population.end(), [](Net a, Net b) {
 		return a.getFitness() < b.getFitness();
 		});
@@ -49,6 +53,7 @@ void Genetic::reduction()
 	}
 }
 
+//TODO Homogeneous functions => by objects (const Net&)
 void Genetic::mutation(size_t index)
 {
 	int probability = rand() % 100;
