@@ -11,8 +11,11 @@ private:
 	void static reduction();
 public:
 	static std::vector<Net> population;
-	void static crossover(const Net& mother, const Net& father); //TODO don't use pointers => const Net&
+	Layer static Mutation(Layer& layer);
+	Net static crossover(const Net& mother, const Net& father);
+	Net static parthenogenesis(const Net& mother);
+	void static geneticModification(const std::vector<double>& target);
 	void static selection();
-	void static mutation(size_t index);
+	void static mutation(const Net& net);
 	int static calculateFitness(std::string convertedOutput, std::string convertedTarget);
 };

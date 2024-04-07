@@ -29,6 +29,15 @@ Net::Net(const Net& original)
 	error = original.error;
 	fitness = original.fitness;
 	previousAverageError = original.previousAverageError;
+	try
+	{
+		name = networksNames.back();
+		networksNames.pop_back();
+	}
+	catch (const std::exception&)
+	{
+		std::cout << "Vector of names is empty!" << std::endl;
+	}
 }
 
 Net& Net::operator=(const Net& other)
@@ -36,6 +45,8 @@ Net& Net::operator=(const Net& other)
 	layers = other.layers;
 	error = other.error;
 	previousAverageError = other.previousAverageError;
+	name = networksNames.back();
+	networksNames.pop_back();
 	return *this;
 }
 

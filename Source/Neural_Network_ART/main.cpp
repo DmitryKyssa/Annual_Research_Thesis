@@ -88,14 +88,22 @@ int main() {
 		std::cout << "Epoch #" << epoch + 1 << std::endl;
 		while (Genetic::population.size() < MAX_POPULATION)
 		{
-			Genetic::crossover(firstNet, secondNet);
-			//std::cout << "Population size: " << Genetic::population.size() << std::endl;
+			Net child = Genetic::crossover(firstNet, secondNet);
+			std::cout << "Child name in main function: " << child.getName() << std::endl;
+			Genetic::population.push_back(child);
 		}
 		for (size_t i = 0; i < Genetic::population.size(); i++)
 		{
 			std::vector<double> outputNeurons = Genetic::population.at(i).getResults();
 			std::string convertedOutput = StringNormalizer::convertToString(outputNeurons);
 			Genetic::population.at(i).setFitness(Genetic::calculateFitness(convertedOutput, convertedTarget));
+		}
+		for (size_t i = 0; i < Genetic::population.size(); i++)
+		{
+			std::cout << "Net name: " << Genetic::population.at(i).getName() <<
+				" Error: " << Genetic::population.at(i).getError()
+				<< "\n Neurons: " << Genetic::population.at(i).getLayers().at(0).at(0).getOutput()
+				<< " Fitness: " << Genetic::population.at(i).getFitness() << std::endl;
 		}
 		Genetic::selection();
 		firstNet = Genetic::population.front();
