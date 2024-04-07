@@ -45,6 +45,7 @@ public:
 	std::vector<Layer> getLayers() const;
 	std::string getName() const;
 	int getFitness() const;
+	void setName(std::string& newName);
 	void setFitness(int fitness);
 	Net& operator=(const Net& other);
 };

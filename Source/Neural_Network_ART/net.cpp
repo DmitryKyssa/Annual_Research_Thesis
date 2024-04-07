@@ -29,15 +29,8 @@ Net::Net(const Net& original)
 	error = original.error;
 	fitness = original.fitness;
 	previousAverageError = original.previousAverageError;
-	try
-	{
-		name = networksNames.back();
-		networksNames.pop_back();
-	}
-	catch (const std::exception&)
-	{
-		std::cout << "Vector of names is empty!" << std::endl;
-	}
+	name = original.name;
+	std::cout << "Copy constructor for net!" << std::endl;
 }
 
 Net& Net::operator=(const Net& other)
@@ -45,8 +38,16 @@ Net& Net::operator=(const Net& other)
 	layers = other.layers;
 	error = other.error;
 	previousAverageError = other.previousAverageError;
-	name = networksNames.back();
-	networksNames.pop_back();
+	try
+	{
+		name = networksNames.back();
+		networksNames.pop_back();
+		std::cout << "Overload for operator=" << std::endl;
+	}
+	catch (const std::exception&)
+	{
+		std::cout << "Vector of names is empty!" << std::endl;
+	}
 	return *this;
 }
 
@@ -90,6 +91,11 @@ int Net::getFitness() const
 void Net::setFitness(int fitness)
 {
 	this->fitness = fitness;
+}
+
+void Net::setName(std::string& newName)
+{
+	name = newName;
 }
 
 void Net::backPropagation(const std::vector<double>& targetValues)

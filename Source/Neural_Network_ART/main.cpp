@@ -88,9 +88,7 @@ int main() {
 		std::cout << "Epoch #" << epoch + 1 << std::endl;
 		while (Genetic::population.size() < MAX_POPULATION)
 		{
-			Net child = Genetic::crossover(firstNet, secondNet);
-			std::cout << "Child name in main function: " << child.getName() << std::endl;
-			Genetic::population.push_back(child);
+			Genetic::crossover(firstNet, secondNet);
 		}
 		for (size_t i = 0; i < Genetic::population.size(); i++)
 		{
