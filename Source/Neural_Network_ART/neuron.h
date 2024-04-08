@@ -29,7 +29,7 @@ public:
 	Neuron(unsigned int numOutputs, unsigned int myIndex);
 	void setOutput(double val);
 	double getOutput(void) const;
-	std::vector<Synapse> getOutputWeights();
+	std::vector<double> getOutputWeights();
 	void feedForward(const Layer& prevLayer);
 	double innerProductWeightsAndGradient(const Layer& nextLayer) const;
 	void calculateOutputGradients(double targetValue);

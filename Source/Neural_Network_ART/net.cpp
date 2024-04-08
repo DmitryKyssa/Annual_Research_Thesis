@@ -2,13 +2,35 @@
 #include <cassert>
 #include <iostream>
 
+std::vector<std::string> Net::networksNames = {
+		"Emma", "Olivia", "Ava", "Isabella", "Sophia",
+		"Mia", "Charlotte", "Amelia", "Harper", "Evelyn",
+		"Abigail", "Emily", "Elizabeth", "Sofia", "Avery",
+		"Ella", "Scarlett", "Grace", "Chloe", "Victoria",
+		"Riley", "Aria", "Lily", "Aubrey", "Zoey",
+		"Penelope", "Lillian", "Addison", "Layla", "Natalie",
+		"Camila", "Hannah", "Brooklyn", "Zoe", "Nora",
+		"Leah", "Savannah", "Audrey", "Claire", "Eleanor",
+		"Skylar", "Ellie", "Stella", "Paisley", "Maya",
+		"Hailey", "Aaliyah", "Kinsley", "Madelyn", "Ariana",
+		"Cora", "Alaina", "Violet", "Kylie", "Melanie",
+		"Bailey", "Caroline", "Valentina", "Ruby", "Jade",
+		"Isabel", "Alice", "Ximena", "Aurora", "Nova",
+		"Emery", "Emilia", "Autumn", "Quinn", "Nevaeh",
+		"Josephine", "Sarah", "Cora", "Sadie", "Piper",
+		"Lydia", "Alexa", "Taylor", "Katherine", "Eliana",
+		"Vivian", "Willow", "Reagan", "Brianna", "Clara",
+		"Faith", "Ashley", "Emerson", "Sophie", "Annabelle",
+		"Alexandra", "Makayla", "Alyssa", "Jasmine", "Reese",
+		"Valeria", "Bella", "Isla", "Charlie", "Everly"
+};
+
 Net::Net(const std::vector<unsigned int>& topology, std::string& name)
 {
 	size_t numLayers = topology.size();
 	for (size_t i = 0; i < numLayers; i++) {
 		layers.push_back(Layer());
 		size_t numOutputs = i == topology.size() - 1 ? 1 : topology.at(i + 1);
-		//std::cout << "Number of outputs:" << numOutputs << std::endl;
 
 		for (size_t neuronNum = 0; neuronNum <= topology.at(i); neuronNum++) {
 			layers.back().push_back(Neuron((unsigned int)numOutputs, (unsigned int)neuronNum));
@@ -23,33 +45,29 @@ Net::Net(const std::vector<unsigned int>& topology, std::string& name)
 	this->name = name;
 }
 
-Net::Net(const Net& original)
-{
-	layers = original.layers;
-	error = original.error;
-	fitness = original.fitness;
-	previousAverageError = original.previousAverageError;
-	name = original.name;
-	std::cout << "Copy constructor for net!" << std::endl;
-}
+//Net::Net(const Net& original)
+//{
+//	layers = original.layers;
+//	error = original.error;
+//	fitness = original.fitness;
+//	previousAverageError = original.previousAverageError;
+//	if (name == "") {
+//		name = networksNames.back() + " " + original.name + "dottir";
+//		networksNames.pop_back();
+//	}
+//	//std::cout << "Copy constructor for net!" << std::endl;
+//}
 
-Net& Net::operator=(const Net& other)
+Net Net::operator=(const Net& other)
 {
 	layers = other.layers;
 	error = other.error;
 	previousAverageError = other.previousAverageError;
-	try
-	{
-		name = networksNames.back();
-		networksNames.pop_back();
-		std::cout << "Overload for operator=" << std::endl;
-	}
-	catch (const std::exception&)
-	{
-		std::cout << "Vector of names is empty!" << std::endl;
-	}
+	fitness = other.fitness;
+	name = other.name;
 	return *this;
 }
+
 
 std::vector<double> Net::getResults() const
 {

@@ -28,9 +28,14 @@ double Neuron::getOutput(void) const
 	return output; 
 }
 
-std::vector<Synapse> Neuron::getOutputWeights() 
+std::vector<double> Neuron::getOutputWeights() 
 { 
-	return outputWeights; 
+	std::vector<double> weights; 
+	for (Synapse s : outputWeights) 
+	{
+		weights.push_back(s.weight);
+	}
+	return weights; 
 }
 
 double Neuron::randomWeight() 
@@ -91,8 +96,9 @@ void Neuron::feedForward(const Layer& previousLayer)
 	{
 		innerProduct += previousLayer.at(i).getOutput() * previousLayer.at(i).outputWeights.at(index).weight;
 	}
-
+	//std::cout << "Inner: " << innerProduct << std::endl;
 	output = Neuron::sigmoid(innerProduct);
+	//std::cout << "Output: " << output << std::endl;
 }
 
 Neuron& Neuron::operator=(const Neuron& other) 

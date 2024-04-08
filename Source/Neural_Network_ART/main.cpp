@@ -9,7 +9,7 @@
 
 const int TESTS_NUMBER = 100000;
 
-static std::ostream& operator<<(std::ostream& out, std::vector<double>& vector) {
+std::ostream& operator<<(std::ostream& out, std::vector<double>& vector) {
 	for (size_t i = 0; i < vector.size(); i++)
 	{
 		out << vector.at(i) << " ";
@@ -37,16 +37,16 @@ int main() {
 	//}
 	//std::string test = db.getTestByID(tableForTests, valueString, 1);
 
-	/*std::string str = "I am able to pay, but I never want a triumph at any price. I never want someone's chest lying under my foot.";
-	std::string substr = " a triumph at any price. ";*/
 	std::string str = "I am able to pay, but I never want a triumph at any price.";
 	std::string substr = " a triumph at any price.";
+	/*std::string str = "Hello, world! ";
+	std::string substr = "Hello, world!";*/
 
-	std::vector<unsigned int> topology = { (unsigned int)str.length(), 20, (unsigned int)str.length() };
-	Net firstNet{ topology, networksNames.back() };
-	networksNames.pop_back();
-	Net secondNet = { topology, networksNames.back() };
-	networksNames.pop_back();
+	std::vector<unsigned int> topology = { (unsigned int)str.length(), 41, (unsigned int)str.length() };
+	Net firstNet{ topology, Net::networksNames.back() };
+	Net::networksNames.pop_back();
+	Net secondNet = { topology, Net::networksNames.back() };
+	Net::networksNames.pop_back();
 
 	std::cout << "First net: " << firstNet.getName() << std::endl;
 	std::cout << "Second net: " << secondNet.getName() << std::endl;
@@ -74,7 +74,7 @@ int main() {
 		//while (result.find(search) == -1)
 		//while (epoch < 1000)
 	{
-		for (size_t i = 0; i < 200; i++) {
+		for (size_t i = 0; i < 100; i++) {
 			firstNet.forwardPropagation(input);
 			firstNet.backPropagation(target);
 			secondNet.forwardPropagation(input);
@@ -88,27 +88,29 @@ int main() {
 		std::cout << "Epoch #" << epoch + 1 << std::endl;
 		while (Genetic::population.size() < MAX_POPULATION)
 		{
-			Genetic::crossover(firstNet, secondNet);
+			Net child = Genetic::crossover(firstNet, secondNet);
+			//std::cout << "Child name in main function: " << child.getName() << std::endl;
+			Genetic::population.push_back(child);
 		}
-		for (size_t i = 0; i < Genetic::population.size(); i++)
+		for (size_t i = 2; i < Genetic::population.size(); i++)
 		{
+			for (size_t j = 0; j < 1000; j++) {
+				Genetic::population.at(i).forwardPropagation(input);
+				Genetic::population.at(i).backPropagation(target);
+			}
 			std::vector<double> outputNeurons = Genetic::population.at(i).getResults();
 			std::string convertedOutput = StringNormalizer::convertToString(outputNeurons);
 			Genetic::population.at(i).setFitness(Genetic::calculateFitness(convertedOutput, convertedTarget));
-		}
-		for (size_t i = 0; i < Genetic::population.size(); i++)
-		{
-			std::cout << "Net name: " << Genetic::population.at(i).getName() <<
-				" Error: " << Genetic::population.at(i).getError()
-				<< "\n Neurons: " << Genetic::population.at(i).getLayers().at(0).at(0).getOutput()
+			std::cout << "Net name: " << Genetic::population.at(i).getName() 
+				<< " Error: " << Genetic::population.at(i).getError()
 				<< " Fitness: " << Genetic::population.at(i).getFitness() << std::endl;
 		}
 		Genetic::selection();
-		firstNet = Genetic::population.front();
-		secondNet = Genetic::population.back();
+		firstNet = Genetic::population.at(0);
+		secondNet = Genetic::population.at(1);
 		while (firstNet.getFitness() == 0 || secondNet.getFitness() == 0)
 		{
-			for (size_t i = 0; i < 200; i++) {
+			for (size_t i = 0; i < 1000; i++) {
 				firstNet.forwardPropagation(input);
 				firstNet.backPropagation(target);
 				secondNet.forwardPropagation(input);
@@ -120,12 +122,19 @@ int main() {
 			std::string secondNetOutput = StringNormalizer::convertToString(secondNet.getResults());
 			secondNet.setFitness(Genetic::calculateFitness(secondNetOutput, convertedTarget));
 		}
-		std::cout << "Fitness of first net: " << firstNet.getFitness() << std::endl;
-		std::cout << "Fitness of second net: " << secondNet.getFitness() << std::endl;
-		std::vector<double> outputNeurons = firstNet.getResults();
+		std::cout << "First net: " << firstNet.getName() << " Fitness: " << firstNet.getFitness() << std::endl;
+		std::cout << "Second net: " << secondNet.getName() << " Fitness: " << secondNet.getFitness() << std::endl;
+		std::vector<double> outputNeurons;
+		if (firstNet.getFitness() > secondNet.getFitness())
+		{
+			outputNeurons = firstNet.getResults();
+		}
+		else
+		{
+			outputNeurons = secondNet.getResults();
+		}
 		result = StringNormalizer::convertToString(outputNeurons);
 		std::cout << "Converted string: " << result << std::endl;
-		std::cout << "Error: " << firstNet.getError() << std::endl;
 		std::cout << std::endl;
 		epoch++;
 	}

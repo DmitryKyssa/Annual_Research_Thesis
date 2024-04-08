@@ -17,10 +17,7 @@ void FileSaver::saveToFile(const Net& net, const std::string& filename)
 		for (size_t j = 0; j < net.getLayers().at(i).size(); j++)
 		{
 			file << "Neuron " << j << " in layer " << i << std::endl;
-			for (size_t k = 0; k < net.getLayers().at(i).at(j).getOutputWeights().size(); k++)
-			{
-				file << "Weight " << k << ": " << net.getLayers().at(i).at(j).getOutputWeights().at(k).weight << std::endl;
-			}
+			//file << "Weights: " << *&(net.getLayers().at(i).at(j).getOutputWeights()) << std::endl;
 		}
 	}
 	file << "Error: " << net.getError() << std::endl;
@@ -78,7 +75,7 @@ Net FileSaver::loadFromFile(const std::string& filename)
 				std::cout << "Weight " << i << ": " << weight << std::endl;
 			}
 			layers.at(layerIndex).push_back(Neuron());
-			layers.at(layerIndex).back().getOutputWeights() = outputWeights;
+			//layers.at(layerIndex).back().getOutputWeights() = outputWeights;
 		}
 		else if (line.find("Error: ") != std::string::npos)
 		{
