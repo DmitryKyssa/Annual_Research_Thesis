@@ -10,7 +10,7 @@ private:
 	std::vector<Layer> layers;
 	double error;
 	double previousAverageError;
-	const double smooth = 100.0;
+	const double smooth = 1000.0;
 	std::string name;
 	int fitness;
 public:

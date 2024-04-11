@@ -129,7 +129,7 @@ void Net::backPropagation(const std::vector<double>& targetValues)
 	error /= outputLayer.size() - 1;
 	error = sqrt(error);
 
-	std::cout << "Error: " << error << std::endl;
+	//std::cout << "Error: " << error << std::endl;
 
 	previousAverageError = (previousAverageError * smooth + error) / (smooth + 1.0);
 

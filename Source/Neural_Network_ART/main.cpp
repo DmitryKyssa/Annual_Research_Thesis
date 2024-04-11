@@ -7,7 +7,7 @@
 #include "normalizer.h"
 #include "fileSaver.h"
 
-const int TESTS_NUMBER = 100000;
+const int TESTS_NUMBER = 100;
 
 std::ostream& operator<<(std::ostream& out, std::vector<double>& vector) {
 	for (size_t i = 0; i < vector.size(); i++)
@@ -20,29 +20,31 @@ std::ostream& operator<<(std::ostream& out, std::vector<double>& vector) {
 }
 
 int main() {
-	//AlphanumericGenerator gen;
+	AlphanumericGenerator gen;
 	Database db;
 
-	//std::string tableForTests = "strings";
-	//std::string valueString = "STRING";
-	//std::string query = "(ID INT PRIMARY KEY NOT NULL, STRING TEXT NOT NULL);";
-	//db.createTable(tableForTests, query);
+	std::string tableForTests = "strings";
+	std::string query = "(ID INT PRIMARY KEY NOT NULL, STRING TEXT NOT NULL);";
+	db.createTable(tableForTests, query);
 	//tableForTests += " (ID,STRING) ";
+	for (int i = 0; i < TESTS_NUMBER; i++) {
+		std::string randomString = gen.generateRandomString(100);
+		std::string values = "VALUES (" + std::to_string(i) + ", '" + randomString + "');";
+		db.insert(tableForTests, values);
+	}
 	//query = "";
-	//for (int i = 0; i < TESTS_NUMBER; i++) {
-	//	int stringLength = rand() % 1000 + 9000;
-	//	query = "VALUES (" + std::to_string(i + 1) + ", '" + gen.generateRandomString(stringLength) + "'); ";
-	//	db.insert(tableForTests, query);
-	//	std::cout << "String added! " << i << std::endl;
-	//}
-	//std::string test = db.getTestByID(tableForTests, valueString, 1);
+	//std::string selection = "STRING";
+	int test_id = 1;
+	//std::string str = db.select(tableForTests, selection, test_id);
+	//str = str.substr(0, 59);
+	//std::string substr = str.substr(0, 25);
 
-	std::string str = "I am able to pay, but I never want a triumph at any price.";
-	std::string substr = " a triumph at any price.";
-	/*std::string str = "Hello, world! ";
-	std::string substr = "Hello, world!";*/
+	/*std::string str = "I am able to pay, but I never want a triumph at any price.";
+	std::string substr = " a triumph at any price.";*/
+	std::string str = "Hello, world";
+	std::string substr = "world";
 
-	std::vector<unsigned int> topology = { (unsigned int)str.length(), 41, (unsigned int)str.length() };
+	std::vector<unsigned int> topology = { (unsigned int)str.size(), 6, (unsigned int)str.size() };
 	Net firstNet{ topology, Net::networksNames.back() };
 	Net::networksNames.pop_back();
 	Net secondNet = { topology, Net::networksNames.back() };
@@ -80,7 +82,6 @@ int main() {
 			secondNet.forwardPropagation(input);
 			secondNet.backPropagation(target);
 		}
-		std::cout << "Pre-training finished!" << std::endl;
 
 		Genetic::population.push_back(firstNet);
 		Genetic::population.push_back(secondNet);
@@ -93,16 +94,13 @@ int main() {
 		}
 		for (size_t i = 2; i < Genetic::population.size(); i++)
 		{
-			for (size_t j = 0; j < 1000; j++) {
+			for (size_t j = 0; j < 300; j++) {
 				Genetic::population.at(i).forwardPropagation(input);
 				Genetic::population.at(i).backPropagation(target);
 			}
 			std::vector<double> outputNeurons = Genetic::population.at(i).getResults();
 			std::string convertedOutput = StringNormalizer::convertToString(outputNeurons);
 			Genetic::population.at(i).setFitness(Genetic::calculateFitness(convertedOutput, convertedTarget));
-			std::cout << "Net name: " << Genetic::population.at(i).getName() 
-				<< " Error: " << Genetic::population.at(i).getError()
-				<< " Fitness: " << Genetic::population.at(i).getFitness() << std::endl;
 		}
 		Genetic::selection();
 		firstNet = Genetic::population.at(0);
@@ -137,6 +135,40 @@ int main() {
 		std::cout << std::endl;
 		epoch++;
 	}
+	///*
+	std::string tableForNetworks = "networks";
+	std::string queryForNetworks = "(NET_NAME TEXT NOT NULL);";
+	db.createTable(tableForNetworks, queryForNetworks);
+	std::string valuesForNetworks = "VALUES ('" + firstNet.getName() + "');";
+	db.insert(tableForNetworks, valuesForNetworks);
 
+	std::string tableForLayers = "layers";
+	std::string queryForLayers = "(NET_NAME TEXT NOT NULL, LAYER_ID INT NOT NULL);";
+	db.createTable(tableForLayers, queryForLayers);
+	for (size_t i = 0; i < firstNet.getLayers().size(); i++)
+	{
+		std::string valuesForLayers = "VALUES ('" + firstNet.getName() + "', " + std::to_string(i + 1) + ");";
+		db.insert(tableForLayers, valuesForLayers);
+	}
+
+	std::string tableForNeurons = "neurons";
+	std::string queryForNeurons = "(NET_NAME TEXT NOT NULL, LAYER_ID INT NOT NULL, NEURON INT NOT NULL, OUTPUT REAL NOT NULL);";
+	db.createTable(tableForNeurons, queryForNeurons);
+	for (size_t i = 0; i < firstNet.getLayers().size(); i++)
+	{
+		for (size_t j = 0; j < firstNet.getLayers().at(i).size(); j++)
+		{
+			std::string valuesForNeurons = "VALUES ('" + firstNet.getName() + "', " + std::to_string(i + 1) + ", " + std::to_string(j + 1) + ", " + std::to_string(firstNet.getLayers().at(i).at(j).getOutput()) + ");";
+			db.insert(tableForNeurons, valuesForNeurons);
+		}
+	}
+
+	std::string tableForResults = "results";
+	std::string queryForResults = "(NET_NAME TEXT NOT NULL, TEST_ID INT NOT NULL, POPULATION_SIZE INT NOT NULL, TARGET TEXT NOT NULL, "
+		"EPOCHES INT NOT NULL); ";
+	db.createTable(tableForResults, queryForResults);
+	std::string valuesForResults = "VALUES ('" + firstNet.getName() + "', " + std::to_string(test_id) + ", " + std::to_string(MAX_POPULATION) + ", " + "'" + substr + "', " + std::to_string(epoch) + ");";
+	db.insert(tableForResults, valuesForResults);
+	//*/
 	return 0;
 }

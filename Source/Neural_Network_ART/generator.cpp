@@ -1,5 +1,8 @@
 #include "generator.h"
 #include <random>
+#include <iostream>
+
+std::string alphanumericsymbols;
 
 std::string AlphanumericGenerator::generateRandomString(int length) {
     std::random_device rd;
@@ -10,5 +13,6 @@ std::string AlphanumericGenerator::generateRandomString(int length) {
     for (int i = 0; i < length; i++) {
         result += alphanumericsymbols[dis(gen)];
     }
+    std::cout << result.substr(0, 10) << std::endl;
     return result;
 }

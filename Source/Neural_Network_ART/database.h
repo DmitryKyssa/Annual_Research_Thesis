@@ -10,7 +10,9 @@ public:
 	~Database();
 	void createTable(std::string& table, std::string& values); //TODO private
 	void insert(std::string& table, std::string& values); //TODO Add update, select and delete
-	std::string getTestByID(std::string& table, std::string& selection, int rowid); 
+	void update(std::string& table, std::string& values, int rowid);
+	void deleteRow(std::string& table, int rowid);
+	std::string select(std::string& table, std::string& selection, int rowid);
 	const char* DATABASE = "neuralNetwork.sqlite";
 private:
 	sqlite3* db;
