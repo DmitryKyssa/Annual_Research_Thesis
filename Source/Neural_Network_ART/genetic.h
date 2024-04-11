@@ -11,7 +11,7 @@ private:
 	void static reduction();
 public:
 	static std::vector<Net> population;
-	Layer static Mutation(Layer& layer);
+	Layer static mutation(Layer& layer);
 	static const Net crossover(const Net& mother, const Net& father);
 	Net static parthenogenesis(const Net& mother);
 	void static geneticModification(const std::vector<double>& target);

@@ -8,8 +8,8 @@ class Database {
 public:
 	Database();
 	~Database();
-	void createTable(std::string& table, std::string& values); //TODO private
-	void insert(std::string& table, std::string& values); //TODO Add update, select and delete
+	void createTable(std::string& table, std::string& values); 
+	void insert(std::string& table, std::string& values); 
 	void update(std::string& table, std::string& values, int rowid);
 	void deleteRow(std::string& table, int rowid);
 	std::string select(std::string& table, std::string& selection, int rowid);
