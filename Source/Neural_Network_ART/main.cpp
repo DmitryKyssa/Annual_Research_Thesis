@@ -61,8 +61,8 @@ int main() {
 	secondNet.forwardPropagation(input);
 	secondNet.backPropagation(target);
 
-	FileSaver::saveToFile(firstNet, "firstNet.txt");
-	FileSaver::saveToFile(secondNet, "secondNet.txt");
+	//FileSaver::saveToFile(firstNet, "firstNet.txt");
+	//FileSaver::saveToFile(secondNet, "secondNet.txt");
 	//Net firstNetFromFile = FileSaver::loadFromFile("firstNet.txt");
 	//Net secondNetFromFile = FileSaver::loadFromFile("secondNet.txt");
 	//std::cout << "First net from file: " << firstNetFromFile.getName() << std::endl;
@@ -89,7 +89,6 @@ int main() {
 		while (Genetic::population.size() < MAX_POPULATION)
 		{
 			Net child = Genetic::crossover(firstNet, secondNet);
-			//std::cout << "Child name in main function: " << child.getName() << std::endl;
 			Genetic::population.push_back(child);
 		}
 		for (size_t i = 2; i < Genetic::population.size(); i++)
@@ -110,7 +109,7 @@ int main() {
 		secondNet = Genetic::population.at(1);
 		while (firstNet.getFitness() == 0 || secondNet.getFitness() == 0)
 		{
-			for (size_t i = 0; i < 1000; i++) {
+			for (size_t i = 0; i < 10; i++) {
 				firstNet.forwardPropagation(input);
 				firstNet.backPropagation(target);
 				secondNet.forwardPropagation(input);

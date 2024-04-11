@@ -1,6 +1,7 @@
 #include "neuron.h"
 #include <cmath>
 #include <iostream>
+#include <random>
 
 Neuron::Neuron()
 {
@@ -40,7 +41,12 @@ std::vector<double> Neuron::getOutputWeights()
 
 double Neuron::randomWeight() 
 {
-	return rand() / double(RAND_MAX);
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<double> dis(0.0, 1.0);
+
+	double randomDouble = dis(gen);
+	return randomDouble;
 }
 
 void Neuron::updateInputWeights(Layer& prevLayer) const
