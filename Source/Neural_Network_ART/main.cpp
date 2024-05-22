@@ -40,7 +40,7 @@ int main() {
 
 	std::string str = "Hello, world!";
 	//char symbol = 'w';
-	std::string substr = "Hello";
+	std::string substr = "Hello, world";
 
 	/*std::string str = "I am able to pay, but I never want a triumph at any price.";
 	std::string substr = " a triumph at any price.";*/
@@ -64,12 +64,12 @@ int main() {
 
 	std::vector<double> input = StringNormalizer::normalize(str);
 	//std::vector<double> target = StringNormalizer::findOneChar(input, symbol, (int)firstNet.getLayers().back().size() - 1);
-	std::vector<double> target = StringNormalizer::findSubstring(str, substr, 13);
+	std::vector<double> target = StringNormalizer::findSubstring(str, substr, 14);
 	std::string convertedTarget = StringNormalizer::convertToString(target);
 
 	int i = 1;
-	double distance = 1000;
-	while (distance >= 0.018) {
+	std::string result = "";
+	while (result.find(substr) == -1 || result == substr) {
 		std::cout << "Epoch: " << i << std::endl;
 
 		for (size_t i = 0; i < 10; i++) {
@@ -79,21 +79,26 @@ int main() {
 			secondNet.backPropagation(target);
 		}
 
+		firstNet.setFitness(Genetic::calculateFitnessByCoincidence(StringNormalizer::convertToString(firstNet.getResults()), convertedTarget));
+		secondNet.setFitness(Genetic::calculateFitnessByCoincidence(StringNormalizer::convertToString(secondNet.getResults()), convertedTarget));
 		//Genetic::population.at(i).setFitness(Genetic::calculateFitnessByCoincidence(convertedOutput, convertedTarget));
 		//Genetic::population.at(i).setDistance(Genetic::calculateFitnessByEuclidianDistance(outputNeurons, target));
-		firstNet.setDistance(Genetic::calculateFitnessByManhattanDistance(firstNet.getResults(), target));
-		secondNet.setDistance(Genetic::calculateFitnessByManhattanDistance(secondNet.getResults(), target));
+		//firstNet.setDistance(Genetic::calculateFitnessByManhattanDistance(firstNet.getResults(), target));
+		//secondNet.setDistance(Genetic::calculateFitnessByManhattanDistance(secondNet.getResults(), target));
 
-		std::cout << "First net: " << firstNet.getName() << " Distance: " << firstNet.getDistance() << std::endl;
-		std::cout << "Second net: " << secondNet.getName() << " Distance: " << secondNet.getDistance() << std::endl;
+		//std::cout << "First net: " << firstNet.getName() << " Distance: " << firstNet.getDistance() << std::endl;
+		//std::cout << "Second net: " << secondNet.getName() << " Distance: " << secondNet.getDistance() << std::endl;
+
+		std::cout << "First net: " << firstNet.getName() << " Fitness: " << firstNet.getFitness() << std::endl;
+		std::cout << "Second net: " << secondNet.getName() << " Fitness: " << secondNet.getFitness() << std::endl;
 
 		std::cout << "Converted string first net: " << StringNormalizer::convertToString(firstNet.getResults()) << std::endl;
 		std::cout << "Converted string second net: " << StringNormalizer::convertToString(secondNet.getResults()) << std::endl;
 
-		if (firstNet.getDistance() > secondNet.getDistance()) {
-			distance = secondNet.getDistance();
+		if (firstNet.getFitness() > secondNet.getFitness()) {
+			result = StringNormalizer::convertToString(firstNet.getResults());
 		}
-		else distance = firstNet.getDistance();
+		else result = StringNormalizer::convertToString(secondNet.getResults());
 
 		//system("pause");
 
