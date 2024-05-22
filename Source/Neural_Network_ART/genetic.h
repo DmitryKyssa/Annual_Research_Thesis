@@ -13,9 +13,8 @@ public:
 	static std::vector<Net> population;
 	Layer static mutation(Layer& layer);
 	static const Net crossover(const Net& mother, const Net& father);
-	Net static parthenogenesis(const Net& mother);
-	void static geneticModification(const std::vector<double>& target);
 	void static selection();
-	void static mutation(const Net& net);
-	int static calculateFitness(std::string convertedOutput, std::string convertedTarget);
+	int static calculateFitnessByCoincidence(std::string convertedOutput, std::string convertedTarget);
+	double static calculateFitnessByEuclidianDistance(std::vector<double> output, std::vector<double> target);
+	double static calculateFitnessByManhattanDistance(std::vector<double> output, std::vector<double> target);
 };

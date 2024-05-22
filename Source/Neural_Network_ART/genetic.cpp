@@ -42,19 +42,11 @@ const Net Genetic::crossover(const Net& mother, const Net& father)
 	return child;
 }
 
-Net Genetic::parthenogenesis(const Net& mother)
-{
-	Net child(mother);
-	return child;
-}
-
 void Genetic::selection()
 {
 	std::sort(population.begin(), population.end(), [](const Net& a, const Net& b) {
-		if (a.getFitness() == b.getFitness()) {
-			return a.getError() < b.getError();
-		}
-		return a.getFitness() > b.getFitness();
+		//return a.getFitness() > b.getFitness();
+		return a.getDistance() < b.getDistance();
 	});
 	reduction();
 }
@@ -69,7 +61,7 @@ void Genetic::reduction()
 	population.erase(population.begin() + 2, population.end());
 }
 
-int Genetic::calculateFitness(std::string convertedOutput, std::string convertedTarget)
+int Genetic::calculateFitnessByCoincidence(std::string convertedOutput, std::string convertedTarget)
 {
 	int fitness = 0;
 	for (size_t i = 0; i < convertedOutput.size(); i++) {
@@ -78,4 +70,31 @@ int Genetic::calculateFitness(std::string convertedOutput, std::string converted
 		}
 	}
 	return fitness;
+}
+
+double Genetic::calculateFitnessByEuclidianDistance(std::vector<double> output, std::vector<double> target)
+{
+	if (output.size() != target.size()) {
+		std::cout << "Sizes of output and target vectors aren't equal!" << std::endl;
+		return 0.0;
+	}
+	double sum = 0.0;
+	for (size_t i = 0; i < output.size(); ++i) {
+		double diff = output[i] - target[i];
+		sum += diff * diff;
+	}
+	return std::sqrt(sum);
+}
+
+double Genetic::calculateFitnessByManhattanDistance(std::vector<double> output, std::vector<double> target)
+{
+	if (output.size() != target.size()) {
+		std::cout << "Sizes of output and target vectors aren't equal!" << std::endl;
+		return 0.0;
+	}
+	double sum = 0.0;
+	for (size_t i = 0; i < output.size(); ++i) {
+		sum += std::abs(output[i] - target[i]);
+	}
+	return sum;
 }

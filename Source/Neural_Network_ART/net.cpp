@@ -30,33 +30,20 @@ Net::Net(const std::vector<unsigned int>& topology, std::string& name)
 	size_t numLayers = topology.size();
 	for (size_t i = 0; i < numLayers; i++) {
 		layers.push_back(Layer());
-		size_t numOutputs = i == topology.size() - 1 ? 1 : topology.at(i + 1);
+		size_t numOutputs = i == topology.size() - 1 ? 1 : topology.at(i + 1)/2;
 
 		for (size_t neuronNum = 0; neuronNum <= topology.at(i); neuronNum++) {
 			layers.back().push_back(Neuron((unsigned int)numOutputs, (unsigned int)neuronNum));
 		}
-
-		layers.back().back().setOutput(1.0);
+		//layers.back().back().setOutput(1.0);
 	}
 
 	error = 0.0;
 	previousAverageError = 0.0;
 	fitness = 0;
+	distance = 0.0;
 	this->name = name;
 }
-
-//Net::Net(const Net& original)
-//{
-//	layers = original.layers;
-//	error = original.error;
-//	fitness = original.fitness;
-//	previousAverageError = original.previousAverageError;
-//	if (name == "") {
-//		name = networksNames.back() + " " + original.name + "dottir";
-//		networksNames.pop_back();
-//	}
-//	//std::cout << "Copy constructor for net!" << std::endl;
-//}
 
 Net Net::operator=(const Net& other)
 {
@@ -68,6 +55,15 @@ Net Net::operator=(const Net& other)
 	return *this;
 }
 
+double Net::getDistance() const
+{
+	return distance;
+}
+
+void Net::setDistance(double distance)
+{
+	this->distance = distance;
+}
 
 std::vector<double> Net::getResults() const
 {
@@ -163,7 +159,7 @@ void Net::backPropagation(const std::vector<double>& targetValues)
 
 void Net::forwardPropagation(const std::vector<double>& inputs)
 {
-	assert(inputs.size() == layers[0].size() - 1);
+	//assert(inputs.size() == layers[0].size() - 1);
 
 	for (size_t i = 0; i < inputs.size(); i++) {
 		layers.at(0).at(i).setOutput(inputs.at(i));
