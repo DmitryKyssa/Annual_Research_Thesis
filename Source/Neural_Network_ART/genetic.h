@@ -2,8 +2,8 @@
 
 #include "net.h"
 
-const size_t MAX_POPULATION = 50;
-const int MUTATION_PROBABILITY = 20;
+const size_t MAX_POPULATION = 10;
+const int MUTATION_PROBABILITY = 50;
 
 class Genetic
 {
