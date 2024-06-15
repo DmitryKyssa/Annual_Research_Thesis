@@ -52,6 +52,7 @@ Net Net::operator=(const Net& other)
 	previousAverageError = other.previousAverageError;
 	fitness = other.fitness;
 	name = other.name;
+	distance = other.distance;
 	return *this;
 }
 

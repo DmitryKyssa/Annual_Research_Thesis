@@ -34,11 +34,9 @@ const Net Genetic::crossover(const Net& mother, const Net& father)
 			}
 		}
 	}
-	//std::cout << "Number of weights from father: " << counter << std::endl;
 
 	child.getLayers().at(0) = mutation(input);
 
-	//std::cout << "Child name in crossover function: " << child.getName() << std::endl;
 	return child;
 }
 
