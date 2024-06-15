@@ -38,38 +38,38 @@ int main() {
 	int test_id = 1;
 	//std::string str = db.select(tableForTests, selection, test_id);
 
-	std::string str = "Hello, world!";
-	//char symbol = 'w';
-	std::string substr = "Hello, world";
+	std::string str = "Hello, world!beunivrvniwrenvindeivjnijewdvjnidjevijnwdejvjnwedivnjnjgenijwreigvndijnvejjgnreiwgiemm";
+	char symbol = 'w';
 
-	/*std::string str = "I am able to pay, but I never want a triumph at any price.";
-	std::string substr = " a triumph at any price.";*/
-
-	std::vector<unsigned int> topology = { 13, 8, 13 };
-	auto start = std::chrono::high_resolution_clock::now();
+	std::vector<unsigned int> topology = { static_cast<unsigned int>(str.length()), 2, 2 };
+	//auto start = std::chrono::high_resolution_clock::now();
 	Net firstNet{ topology, Net::networksNames.back() };
-	auto finish = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
-	std::cout << "Microseconds: " << duration.count() << std::endl;
 	Net::networksNames.pop_back();
-	start = std::chrono::high_resolution_clock::now();
+	//auto finish = std::chrono::high_resolution_clock::now();
+	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
+	//std::cout << "Microseconds: " << duration.count() << std::endl;
+	//start = std::chrono::high_resolution_clock::now();
 	Net secondNet{ topology, Net::networksNames.back() };
-	finish = std::chrono::high_resolution_clock::now();
-	duration = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
-	std::cout << "Microseconds: " << duration.count() << std::endl;
 	Net::networksNames.pop_back();
+	//finish = std::chrono::high_resolution_clock::now();
+	//duration = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
+	//std::cout << "Microseconds: " << duration.count() << std::endl;
 
 	std::cout << "First net: " << firstNet.getName() << std::endl;
 	std::cout << "Second net: " << secondNet.getName() << std::endl;
 
 	std::vector<double> input = StringNormalizer::normalize(str);
+	std::cout << "Input: " << input << std::endl;
 	//std::vector<double> target = StringNormalizer::findOneChar(input, symbol, (int)firstNet.getLayers().back().size() - 1);
-	std::vector<double> target = StringNormalizer::findSubstring(str, substr, 14);
-	std::string convertedTarget = StringNormalizer::convertToString(target);
+	//std::vector<double> target = StringNormalizer::findSubstring(str, substr, 14);
+	//std::string convertedTarget = StringNormalizer::convertToString(target);
+	std::vector<double> target = { 1.0, 1.0 / 7.0 };
+	std::cout << "Target: " << target << std::endl;
 
 	int i = 1;
-	std::string result = "";
-	while (result.find(substr) == -1 || result == substr) {
+	//std::string result = "";
+	//while (result.find(substr) == -1 || result == substr) {
+	while (i < 1000) {
 		std::cout << "Epoch: " << i << std::endl;
 
 		for (size_t i = 0; i < 10; i++) {
@@ -79,28 +79,33 @@ int main() {
 			secondNet.backPropagation(target);
 		}
 
-		firstNet.setFitness(Genetic::calculateFitnessByCoincidence(StringNormalizer::convertToString(firstNet.getResults()), convertedTarget));
-		secondNet.setFitness(Genetic::calculateFitnessByCoincidence(StringNormalizer::convertToString(secondNet.getResults()), convertedTarget));
+		//firstNet.setFitness(Genetic::calculateFitnessByCoincidence(StringNormalizer::convertToString(firstNet.getResults()), convertedTarget));
+		//secondNet.setFitness(Genetic::calculateFitnessByCoincidence(StringNormalizer::convertToString(secondNet.getResults()), convertedTarget));
 		//Genetic::population.at(i).setFitness(Genetic::calculateFitnessByCoincidence(convertedOutput, convertedTarget));
 		//Genetic::population.at(i).setDistance(Genetic::calculateFitnessByEuclidianDistance(outputNeurons, target));
-		//firstNet.setDistance(Genetic::calculateFitnessByManhattanDistance(firstNet.getResults(), target));
-		//secondNet.setDistance(Genetic::calculateFitnessByManhattanDistance(secondNet.getResults(), target));
+		firstNet.setDistance(Genetic::calculateFitnessByManhattanDistance(firstNet.getResults(), target));
+		secondNet.setDistance(Genetic::calculateFitnessByManhattanDistance(secondNet.getResults(), target));
 
-		//std::cout << "First net: " << firstNet.getName() << " Distance: " << firstNet.getDistance() << std::endl;
-		//std::cout << "Second net: " << secondNet.getName() << " Distance: " << secondNet.getDistance() << std::endl;
+		std::cout << "First net: " << firstNet.getName() << " Distance: " << firstNet.getDistance() << std::endl;
+		std::cout << "Second net: " << secondNet.getName() << " Distance: " << secondNet.getDistance() << std::endl;
 
-		std::cout << "First net: " << firstNet.getName() << " Fitness: " << firstNet.getFitness() << std::endl;
-		std::cout << "Second net: " << secondNet.getName() << " Fitness: " << secondNet.getFitness() << std::endl;
+		std::cout << "First net: " << firstNet.getName() << " Output: " << firstNet.getResults().at(0) << " "
+			<< pow(firstNet.getResults().at(1), -1) << std::endl;
+		std::cout << "Second net: " << secondNet.getName() << " Output: " << secondNet.getResults().at(0) << " "
+			<< pow(secondNet.getResults().at(1), -1) << std::endl;
 
-		std::cout << "Converted string first net: " << StringNormalizer::convertToString(firstNet.getResults()) << std::endl;
-		std::cout << "Converted string second net: " << StringNormalizer::convertToString(secondNet.getResults()) << std::endl;
+		//std::cout << "First net: " << firstNet.getName() << " Fitness: " << firstNet.getFitness() << std::endl;
+		//std::cout << "Second net: " << secondNet.getName() << " Fitness: " << secondNet.getFitness() << std::endl;
 
-		if (firstNet.getFitness() > secondNet.getFitness()) {
-			result = StringNormalizer::convertToString(firstNet.getResults());
-		}
-		else result = StringNormalizer::convertToString(secondNet.getResults());
+		//std::cout << "Converted string first net: " << StringNormalizer::convertToString(firstNet.getResults()) << std::endl;
+		//std::cout << "Converted string second net: " << StringNormalizer::convertToString(secondNet.getResults()) << std::endl;
 
-		//system("pause");
+		//if (firstNet.getFitness() > secondNet.getFitness()) {
+		//	result = StringNormalizer::convertToString(firstNet.getResults());
+		//}
+		//else result = StringNormalizer::convertToString(secondNet.getResults());
+
+		system("pause");
 
 		i++;
 	}
