@@ -20,6 +20,12 @@ std::ostream& operator<<(std::ostream& out, std::vector<double>& vector) {
 	return out;
 }
 
+enum DistanceCalculating
+{
+	Euclidian,
+	Manhattan
+};
+
 int main() {
 	AlphanumericGenerator gen;
 	Database db;
@@ -58,21 +64,18 @@ int main() {
 	std::string str = db.select(tableForTests, selection, test_id);
 
 	std::vector<unsigned int> topology = { static_cast<unsigned int>(str.length()), 5, static_cast<unsigned int>(outputLayerSize) };
-	//auto start = std::chrono::high_resolution_clock::now();
+	auto start = std::chrono::high_resolution_clock::now();
 	Net firstNet{ topology, Net::networksNames.back() };
 	Net::networksNames.pop_back();
-	//auto finish = std::chrono::high_resolution_clock::now();
-	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
-	//std::cout << "Microseconds: " << duration.count() << std::endl;
-	//start = std::chrono::high_resolution_clock::now();
+	auto finish = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
+	std::cout << "Microseconds for creating first net: " << duration.count() << std::endl;
+	start = std::chrono::high_resolution_clock::now();
 	Net secondNet{ topology, Net::networksNames.back() };
 	Net::networksNames.pop_back();
-	//finish = std::chrono::high_resolution_clock::now();
-	//duration = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
-	//std::cout << "Microseconds: " << duration.count() << std::endl;
-
-	std::cout << "First net: " << firstNet.getName() << std::endl;
-	std::cout << "Second net: " << secondNet.getName() << std::endl;
+	finish = std::chrono::high_resolution_clock::now();
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
+	std::cout << "Microseconds for creating second net: " << duration.count() << std::endl;
 
 	std::vector<double> input = StringNormalizer::normalize(str);
 	std::cout << "Input: " << input << std::endl;
@@ -84,9 +87,16 @@ int main() {
 	int index = std::stoi(db.select(tableForTests, selection, test_id));
 	target.at(1) = 1.0 / index;
 	std::cout << "Target: " << target << std::endl;
+	std::cout << "Index: " << index << std::endl;
+
+	DistanceCalculating method = DistanceCalculating::Manhattan;
+
+	std::cout << "Enter number of epochs: ";
+	size_t maxEpochs = 0;
+	std::cin >> maxEpochs;
 
 	size_t epoch = 0;
-	while (epoch < 10)
+	while (epoch < maxEpochs)
 	{
 		firstNet.forwardPropagation(input);
 		firstNet.backPropagation(target);
@@ -97,7 +107,7 @@ int main() {
 		Genetic::population.push_back(secondNet);
 
 		std::cout << "Epoch #" << epoch + 1 << std::endl;
-		//start = std::chrono::high_resolution_clock::now();
+		start = std::chrono::high_resolution_clock::now();
 
 		while (Genetic::population.size() < MAX_POPULATION)
 		{
@@ -114,38 +124,67 @@ int main() {
 			}
 		}
 
-		for (size_t i = 0; i < Genetic::population.size(); i++)
+		if (method == DistanceCalculating::Manhattan)
 		{
-			Genetic::population.at(i).setDistance(Genetic::calculateFitnessByManhattanDistance(Genetic::population.at(i).getResults(), target));
-			std::cout << "Net: " << Genetic::population.at(i).getName() << " Distance: " << Genetic::population.at(i).getDistance() << std::endl;
+			for (size_t i = 0; i < Genetic::population.size(); i++)
+			{
+				Genetic::population.at(i).setDistance(Genetic::calculateFitnessByManhattanDistance(Genetic::population.at(i).getResults(), target));
+			}
+		}
+		else
+		{
+			for (size_t i = 0; i < Genetic::population.size(); i++)
+			{
+				Genetic::population.at(i).setDistance(Genetic::calculateFitnessByEuclidianDistance(Genetic::population.at(i).getResults(), target));
+			}
 		}
 
-		//for (size_t i = 0; i < Genetic::population.size(); i++)
-		//{
-		//	Genetic::population.at(i).setDistance(Genetic::calculateFitnessByEuclidianDistance(Genetic::population.at(i).getResults(), target));
-		//	std::cout << "Net: " << Genetic::population.at(i).getName() << " Distance: " << Genetic::population.at(i).getDistance() << std::endl;
-		//}
-
 		Genetic::selection();
+
 		firstNet = Genetic::population.at(0);
 		secondNet = Genetic::population.at(1);
 
-		std::cout << "First net: " << firstNet.getName() << " with distance: " << firstNet.getDistance() << std::endl;
-		std::cout << "Second net: " << secondNet.getName() << " with distance: " << secondNet.getDistance() << std::endl;
+		std::cout << "First net: " << firstNet.getName() << " with distance: " << firstNet.getDistance()
+			<< ", output: " << firstNet.getResults().at(0) << " " << firstNet.getResults().at(1)
+			<< " and index: " << round(pow(firstNet.getResults().at(1), -1)) << std::endl;
+		std::cout << "Second net: " << secondNet.getName() << " with distance: " << secondNet.getDistance()
+			<< ", output: " << secondNet.getResults().at(0) << " " << secondNet.getResults().at(1)
+			<< " and index: " << round(pow(secondNet.getResults().at(1), -1)) << std::endl;
 
-		std::cout << "First net: " << firstNet.getName() << " converted output: " << firstNet.getResults().at(0) << " "
-			<< pow(firstNet.getResults().at(1), -1) << std::endl;
-		std::cout << "Second net: " << secondNet.getName() << " converted output: " << secondNet.getResults().at(0) << " "
-			<< pow(secondNet.getResults().at(1), -1) << std::endl;
-
-		system("pause");
+		//system("pause");
 
 		epoch++;
-		//finish = std::chrono::high_resolution_clock::now();
-		//duration = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
-		//std::cout << "Microseconds: " << duration.count() << std::endl;
+		finish = std::chrono::high_resolution_clock::now();
+		duration = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
+		std::cout << "Microseconds for training: " << duration.count() << std::endl;
+		std::cout << std::endl;
 	}
-	//*/
+
+	std::cout << "Enter string: ";
+	std::string userInput;
+	std::cin >> userInput;
+	while (userInput.size() <= 100)
+	{
+		userInput += " ";
+	}
+	std::cout << "Enter symbol: ";
+	char userSymbol;
+	std::cin >> userSymbol;
+
+	std::vector<double> userNormalizedInput = StringNormalizer::normalize(userInput);
+	std::vector<double> result = StringNormalizer::findOneChar(userNormalizedInput, userSymbol, outputLayerSize);
+	target.at(0) = result.at(0);
+	target.at(1) = 1.0 / result.at(1);
+
+	for (int i = 0; i < 200; i++)
+	{
+		firstNet.forwardPropagation(userNormalizedInput);
+		firstNet.backPropagation(target);
+	}
+
+	std::cout << "First net: " << firstNet.getName() << " with distance: " << firstNet.getDistance()
+		<< ", output: " << firstNet.getResults().at(0) << " " << firstNet.getResults().at(1)
+		<< " and index: " << round(pow(firstNet.getResults().at(1), -1)) << std::endl;
 	/*
 	std::string tableForNetworks = "networks";
 	std::string queryForNetworks = "(NET_NAME TEXT NOT NULL);";
