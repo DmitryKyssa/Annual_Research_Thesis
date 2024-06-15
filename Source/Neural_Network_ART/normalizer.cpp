@@ -10,7 +10,7 @@ std::vector<double> StringNormalizer::normalize(std::string& str)
 	{
 		double value = 1.0 / str[i];
 		normalized.push_back(value);
-		std::cout << str[i] << ": " << value << std::endl;
+		//std::cout << str[i] << ": " << value << std::endl;
 	}
 	return normalized;
 }
@@ -23,12 +23,13 @@ std::vector<double> StringNormalizer::findOneChar(std::vector<double>& normalize
 
 	if (it != normalized.end()) {
 		std::cout << "Value '" << symbol << "' was found in vector at position: " << position << std::endl;
+		output.at(0) = 1.0;
+		output.at(1) = position;
 	}
 	else {
 		std::cout << "Value '" << symbol << "' was not found in vector." << std::endl;
+		output.at(1) = normalized.size() + 1;
 	}
-
-	output.at(position) = 1.0 / symbol;
 
 	return output;
 }
@@ -39,7 +40,7 @@ std::vector<double> StringNormalizer::findSubstring(std::string& str, std::strin
 
 	size_t firstIndex = str.find(substr);
 
-	if (firstIndex != -1 ) {
+	if (firstIndex != -1) {
 		std::cout << "Substring '" << substr << "' was found and starts from position: " << firstIndex << std::endl;
 	}
 	else {

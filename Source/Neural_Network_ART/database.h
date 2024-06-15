@@ -13,6 +13,8 @@ public:
 	void update(std::string& table, std::string& values, int rowid);
 	void deleteRow(std::string& table, int rowid);
 	std::string select(std::string& table, std::string& selection, int rowid);
+	bool tableExists(const std::string& tableName);
+	bool isTableFull(const std::string& tableName);
 	const char* DATABASE = "neuralNetwork.sqlite";
 private:
 	sqlite3* db;

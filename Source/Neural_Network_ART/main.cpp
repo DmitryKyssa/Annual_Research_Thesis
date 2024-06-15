@@ -23,25 +23,41 @@ std::ostream& operator<<(std::ostream& out, std::vector<double>& vector) {
 int main() {
 	AlphanumericGenerator gen;
 	Database db;
+	char symbol = 'c';
+	int outputLayerSize = 2;
+	bool updateTableIfExists = false;
 
-	std::string tableForTests = "strings";
-	//std::string query = "(ID INT PRIMARY KEY NOT NULL, STRING TEXT NOT NULL);";
-	//db.createTable(tableForTests, query);
-	////tableForTests += " (ID,STRING) ";
-	//for (int i = 0; i < TESTS_NUMBER; i++) {
-	//	std::string randomString = gen.generateRandomString(100);
-	//	std::string values = "VALUES (" + std::to_string(i) + ", '" + randomString + "');";
-	//	db.insert(tableForTests, values);
-	//}
-	//query = "";
-	std::string selection = "STRING";
+	std::string tableForTests = "tests";
+	std::string query = "(TEST TEXT NOT NULL, SYMBOL INT NOT NULL, POSITION INT NOT NULL);";
+	db.createTable(tableForTests, query);
+	query = "";
+
+	if (!db.tableExists(tableForTests) || updateTableIfExists)
+	{
+		std::cout << "creating or updating" << std::endl;
+		for (int i = 1; i <= TESTS_NUMBER; i++) {
+			std::string randomString = gen.generateRandomString(100);
+			std::vector<double> normalizedRandomString = StringNormalizer::normalize(randomString);
+			std::vector<double> result = StringNormalizer::findOneChar(normalizedRandomString, symbol, outputLayerSize);
+			std::string values = "VALUES ('" + randomString + "', " + std::to_string(result.at(0)) + ", " + std::to_string(result.at(1)) + ");";
+
+			if (db.tableExists(tableForTests) && !db.isTableFull(tableForTests))
+			{
+				std::string update = "TEST = '" + randomString + "', SYMBOL = " + std::to_string(result.at(0)) + ", POSITION = " + std::to_string(result.at(1));
+				db.update(tableForTests, update, i);
+			}
+			else
+			{
+				db.insert(tableForTests, values);
+			}
+		}
+	}
+
+	std::string selection = "TEST";
 	int test_id = 1;
-	//std::string str = db.select(tableForTests, selection, test_id);
+	std::string str = db.select(tableForTests, selection, test_id);
 
-	std::string str = "Hello, world!beunivrvniwrenvindeivjnijewdvjnidjevijnwdejvjnwedivnjnjgenijwreigvndijnvejjgnreiwgiemm";
-	char symbol = 'w';
-
-	std::vector<unsigned int> topology = { static_cast<unsigned int>(str.length()), 5, 2 };
+	std::vector<unsigned int> topology = { static_cast<unsigned int>(str.length()), 5, static_cast<unsigned int>(outputLayerSize) };
 	//auto start = std::chrono::high_resolution_clock::now();
 	Net firstNet{ topology, Net::networksNames.back() };
 	Net::networksNames.pop_back();
@@ -60,94 +76,43 @@ int main() {
 
 	std::vector<double> input = StringNormalizer::normalize(str);
 	std::cout << "Input: " << input << std::endl;
-	//std::vector<double> target = StringNormalizer::findOneChar(input, symbol, (int)firstNet.getLayers().back().size() - 1);
-	//std::vector<double> target = StringNormalizer::findSubstring(str, substr, 14);
-	//std::string convertedTarget = StringNormalizer::convertToString(target);
-	std::vector<double> target = { 1.0, 1.0 / 7.0 };
+
+	std::vector<double> target(outputLayerSize, 0.0);
+	selection = "SYMBOL";
+	target.at(0) = std::stoi(db.select(tableForTests, selection, test_id));
+	selection = "POSITION";
+	int index = std::stoi(db.select(tableForTests, selection, test_id));
+	target.at(1) = 1.0 / index;
 	std::cout << "Target: " << target << std::endl;
 
-	/*
-	int i = 1;
-	//std::string result = "";
-	//while (result.find(substr) == -1 || result == substr) {
-	while (i < 1000) {
-		std::cout << "Epoch: " << i << std::endl;
-
-		for (size_t i = 0; i < 10; i++) {
-			firstNet.forwardPropagation(input);
-			firstNet.backPropagation(target);
-			secondNet.forwardPropagation(input);
-			secondNet.backPropagation(target);
-		}
-
-		//firstNet.setFitness(Genetic::calculateFitnessByCoincidence(StringNormalizer::convertToString(firstNet.getResults()), convertedTarget));
-		//secondNet.setFitness(Genetic::calculateFitnessByCoincidence(StringNormalizer::convertToString(secondNet.getResults()), convertedTarget));
-		//Genetic::population.at(i).setFitness(Genetic::calculateFitnessByCoincidence(convertedOutput, convertedTarget));
-		//Genetic::population.at(i).setDistance(Genetic::calculateFitnessByEuclidianDistance(outputNeurons, target));
-		firstNet.setDistance(Genetic::calculateFitnessByManhattanDistance(firstNet.getResults(), target));
-		secondNet.setDistance(Genetic::calculateFitnessByManhattanDistance(secondNet.getResults(), target));
-
-		std::cout << "First net: " << firstNet.getName() << " Distance: " << firstNet.getDistance() << std::endl;
-		std::cout << "Second net: " << secondNet.getName() << " Distance: " << secondNet.getDistance() << std::endl;
-
-		std::cout << "First net: " << firstNet.getName() << " Output: " << firstNet.getResults().at(0) << " "
-			<< pow(firstNet.getResults().at(1), -1) << std::endl;
-		std::cout << "Second net: " << secondNet.getName() << " Output: " << secondNet.getResults().at(0) << " "
-			<< pow(secondNet.getResults().at(1), -1) << std::endl;
-
-		//std::cout << "First net: " << firstNet.getName() << " Fitness: " << firstNet.getFitness() << std::endl;
-		//std::cout << "Second net: " << secondNet.getName() << " Fitness: " << secondNet.getFitness() << std::endl;
-
-		//std::cout << "Converted string first net: " << StringNormalizer::convertToString(firstNet.getResults()) << std::endl;
-		//std::cout << "Converted string second net: " << StringNormalizer::convertToString(secondNet.getResults()) << std::endl;
-
-		//if (firstNet.getFitness() > secondNet.getFitness()) {
-		//	result = StringNormalizer::convertToString(firstNet.getResults());
-		//}
-		//else result = StringNormalizer::convertToString(secondNet.getResults());
-
-		system("pause");
-
-		i++;
-	}
-	*/
-
-
-	///*
 	size_t epoch = 0;
-	//std::string result = "";
-	//while (result.find(substr) == -1)
-	while (epoch < 1000)
+	while (epoch < 10)
 	{
-		//for (size_t i = 0; i < 10; i++) {
 		firstNet.forwardPropagation(input);
 		firstNet.backPropagation(target);
 		secondNet.forwardPropagation(input);
 		secondNet.backPropagation(target);
-		//}
 
 		Genetic::population.push_back(firstNet);
 		Genetic::population.push_back(secondNet);
 
 		std::cout << "Epoch #" << epoch + 1 << std::endl;
 		//start = std::chrono::high_resolution_clock::now();
+
 		while (Genetic::population.size() < MAX_POPULATION)
 		{
 			Net child = Genetic::crossover(firstNet, secondNet);
 			Genetic::population.push_back(child);
 		}
+
 		for (size_t i = 2; i < Genetic::population.size(); i++)
 		{
-			for (size_t j = 0; j < 5; j++) {
+			for (size_t j = 0; j < 5; j++)
+			{
 				Genetic::population.at(i).forwardPropagation(input);
 				Genetic::population.at(i).backPropagation(target);
 			}
 		}
-		//	
-		//	//std::string convertedOutput = StringNormalizer::convertToString(outputNeurons);
-		//	//Genetic::population.at(i).setFitness(Genetic::calculateFitnessByCoincidence(convertedOutput, convertedTarget));
-		//	//Genetic::population.at(i).setDistance(Genetic::calculateFitnessByEuclidianDistance(outputNeurons, target));
-		//}
 
 		for (size_t i = 0; i < Genetic::population.size(); i++)
 		{
@@ -155,31 +120,22 @@ int main() {
 			std::cout << "Net: " << Genetic::population.at(i).getName() << " Distance: " << Genetic::population.at(i).getDistance() << std::endl;
 		}
 
+		//for (size_t i = 0; i < Genetic::population.size(); i++)
+		//{
+		//	Genetic::population.at(i).setDistance(Genetic::calculateFitnessByEuclidianDistance(Genetic::population.at(i).getResults(), target));
+		//	std::cout << "Net: " << Genetic::population.at(i).getName() << " Distance: " << Genetic::population.at(i).getDistance() << std::endl;
+		//}
+
 		Genetic::selection();
-		std::cout << "Selection is finished!" << std::endl;
 		firstNet = Genetic::population.at(0);
 		secondNet = Genetic::population.at(1);
-		//while (firstNet.getFitness() == 0 || secondNet.getFitness() == 0)
-		//{
-		//	for (size_t i = 0; i < 10; i++) {
-		//		firstNet.forwardPropagation(input);
-		//		firstNet.backPropagation(target);
-		//		secondNet.forwardPropagation(input);
-		//		secondNet.backPropagation(target);
-		//	}
-		//	std::string firstNetOutput = StringNormalizer::convertToString(firstNet.getResults());
-		//	firstNet.setFitness(Genetic::calculateFitnessByCoincidence(firstNetOutput, convertedTarget));
-		//	std::string secondNetOutput = StringNormalizer::convertToString(secondNet.getResults());
-		//	secondNet.setFitness(Genetic::calculateFitnessByCoincidence(secondNetOutput, convertedTarget));
-		//}
-		//std::cout << "First net: " << firstNet.getName() << " Fitness: " << firstNet.getFitness() << std::endl;
-		//std::cout << "Second net: " << secondNet.getName() << " Fitness: " << secondNet.getFitness() << std::endl;
-		std::cout << "First net: " << firstNet.getName() << " Distance: " << firstNet.getDistance() << std::endl;
-		std::cout << "Second net: " << secondNet.getName() << " Distance: " << secondNet.getDistance() << std::endl;
 
-		std::cout << "First net: " << firstNet.getName() << " Output: " << firstNet.getResults().at(0) << " "
+		std::cout << "First net: " << firstNet.getName() << " with distance: " << firstNet.getDistance() << std::endl;
+		std::cout << "Second net: " << secondNet.getName() << " with distance: " << secondNet.getDistance() << std::endl;
+
+		std::cout << "First net: " << firstNet.getName() << " converted output: " << firstNet.getResults().at(0) << " "
 			<< pow(firstNet.getResults().at(1), -1) << std::endl;
-		std::cout << "Second net: " << secondNet.getName() << " Output: " << secondNet.getResults().at(0) << " "
+		std::cout << "Second net: " << secondNet.getName() << " converted output: " << secondNet.getResults().at(0) << " "
 			<< pow(secondNet.getResults().at(1), -1) << std::endl;
 
 		system("pause");

@@ -13,6 +13,5 @@ std::string AlphanumericGenerator::generateRandomString(int length) {
     for (int i = 0; i < length; i++) {
         result += alphanumericsymbols[dis(gen)];
     }
-    std::cout << result.substr(0, 10) << std::endl;
     return result;
 }
