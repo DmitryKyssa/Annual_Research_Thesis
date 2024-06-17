@@ -110,10 +110,6 @@ int main()
 		std::string str = db.select(tableForTests, selection, ++testID);
 		std::cout << "Test ID: " << testID << std::endl;
 		std::vector<double> input = StringNormalizer::normalize(str);
-		while (input.size() < inputLayerSize)
-		{
-			input.push_back(0.01);
-		}
 
 		selection = "SYMBOL";
 		target.at(0) = std::stoi(db.select(tableForTests, selection, testID));
@@ -153,7 +149,7 @@ int main()
 
 			for (size_t i = 2; i < Genetic::population.size(); i++)
 			{
-				for (size_t j = 0; j < 20; j++)
+				for (size_t j = 0; j < 5; j++)
 				{
 					Genetic::population.at(i).forwardPropagation(input);
 					Genetic::population.at(i).backPropagation(target);

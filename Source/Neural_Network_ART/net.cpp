@@ -30,26 +30,19 @@ Net::Net(const std::vector<unsigned int>& topology, std::string& name)
 	size_t numLayers = topology.size();
 	for (size_t i = 0; i < numLayers; i++)
 	{
-		for (size_t i = 0; i < numLayers; i++) {
-			layers.push_back(Layer());
-			unsigned int numOutputs = i == topology.size() - 1 ? 1 : topology.at(i + 1);
+		layers.push_back(Layer());
+		unsigned int numOutputs = i == topology.size() - 1 ? 1 : topology.at(i + 1);
 
-			for (unsigned int neuronNum = 0; neuronNum < topology.at(i); neuronNum++)
-			{
-				layers.back().push_back(Neuron(numOutputs, neuronNum));
-				for (size_t neuronNum = 0; neuronNum <= topology.at(i); neuronNum++) {
-					layers.back().push_back(Neuron((unsigned int)numOutputs, (unsigned int)neuronNum));
-				}
-				//layers.back().back().setOutput(1.0);
-			}
-
-			error = 0.0;
-			previousAverageError = 0.0;
-			fitness = 0;
-			distance = 0.0;
-			this->name = name;
+		for (unsigned int neuronNum = 0; neuronNum < topology.at(i); neuronNum++)
+		{
+			layers.back().push_back(Neuron(numOutputs, neuronNum));
 		}
 	}
+	error = 0.0;
+	previousAverageError = 0.0;
+	fitness = 0;
+	distance = 0.0;
+	this->name = name;
 }
 
 Net Net::operator=(const Net& other)
@@ -127,23 +120,19 @@ void Net::backPropagation(const std::vector<double>& targetValues)
 	error = 0.0;
 
 	for (size_t i = 0; i < outputLayer.size(); i++)
-		for (size_t i = 0; i < outputLayer.size() - 1; i++)
-		{
-			double delta = targetValues.at(i) - outputLayer.at(i).getOutput();
-			error += delta * delta;
-		}
+	{
+		double delta = targetValues.at(i) - outputLayer.at(i).getOutput();
+		error += delta * delta;
+	}
 	error /= outputLayer.size() - 1;
 	error = sqrt(error);
-
-	//std::cout << "Error: " << error << std::endl;
 
 	previousAverageError = (previousAverageError * smooth + error) / (smooth + 1.0);
 
 	for (size_t i = 0; i < outputLayer.size(); i++)
-		for (size_t i = 0; i < outputLayer.size() - 1; i++)
-		{
-			outputLayer.at(i).calculateOutputGradients(targetValues.at(i));
-		}
+	{
+		outputLayer.at(i).calculateOutputGradients(targetValues.at(i));
+	}
 
 	for (size_t i = layers.size() - 2; i > 0; --i)
 	{
@@ -161,7 +150,7 @@ void Net::backPropagation(const std::vector<double>& targetValues)
 		Layer& layer = layers.at(i);
 		Layer& prevLayer = layers.at(i - 1);
 
-		for (size_t j = 0; j < layer.size() - 1; j++)
+		for (size_t j = 0; j < layer.size(); j++)
 		{
 			layer.at(j).updateInputWeights(prevLayer);
 		}
@@ -170,25 +159,17 @@ void Net::backPropagation(const std::vector<double>& targetValues)
 
 void Net::forwardPropagation(const std::vector<double>& inputs)
 {
-	//assert(inputs.size() == layers[0].size() - 1);
-
-	for (size_t i = 0; i < inputs.size(); i++)
+	for (size_t i = 0; i < inputs.size(); i++) 
 	{
-		for (size_t i = 0; i < inputs.size(); i++) {
-			layers.at(0).at(i).setOutput(inputs.at(i));
-		}
+		layers.at(0).at(i).setOutput(inputs.at(i));
+	}
 
-		for (size_t i = 1; i < layers.size(); i++)
+	for (size_t i = 1; i < layers.size(); i++) 
+	{
+		Layer& prevLayer = layers.at(i - 1);
+		for (size_t j = 0; j < layers.at(i).size(); j++) 
 		{
-			for (size_t i = 1; i < layers.size(); i++) {
-				Layer& prevLayer = layers.at(i - 1);
-				for (size_t j = 0; j < layers.at(i).size(); j++)
-				{
-					for (size_t j = 0; j < layers.at(i).size() - 1; j++) {
-						layers.at(i).at(j).feedForward(prevLayer);
-					}
-				}
-			}
+			layers.at(i).at(j).feedForward(prevLayer);
 		}
 	}
 }
