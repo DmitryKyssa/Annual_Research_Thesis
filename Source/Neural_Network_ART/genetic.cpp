@@ -53,7 +53,7 @@ void Genetic::reduction()
 	for (size_t i = 2; i < population.size(); i++) 
 	{
 		std::string str = population.at(i).getName();
-		str = "-" + str;
+		//str = "-" + str;
 		Net::networksNames.push_back(str);
 	}
 	population.erase(population.begin() + 2, population.end());

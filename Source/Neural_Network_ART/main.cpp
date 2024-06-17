@@ -149,7 +149,7 @@ int main()
 
 			for (size_t i = 2; i < Genetic::population.size(); i++)
 			{
-				for (size_t j = 0; j < 5; j++)
+				for (size_t j = 0; j < 10; j++)
 				{
 					Genetic::population.at(i).forwardPropagation(input);
 					Genetic::population.at(i).backPropagation(target);
@@ -189,33 +189,7 @@ int main()
 	duration = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
 	std::cout << "Microseconds for training: " << duration.count() << std::endl;
 
-	std::cout << "Enter string: ";
-	std::string userInput;
-	std::cin >> userInput;
-	while (userInput.size() < inputLayerSize)
-	{
-		userInput += " ";
-	}
-
-	std::cout << "Enter symbol: ";
-	char userSymbol;
-	std::cin >> userSymbol;
-
-	std::vector<double> userNormalizedInput = StringNormalizer::normalize(userInput);
-	std::vector<double> result = StringNormalizer::findOneChar(userNormalizedInput, userSymbol, outputLayerSize);
-	target.at(0) = result.at(0);
-	target.at(1) = 1.0 / result.at(1);
-
-	for (int i = 0; i < 100; i++)
-	{
-		firstNet.forwardPropagation(userNormalizedInput);
-		firstNet.backPropagation(target);
-	}
-
-	std::cout << "First net: " << firstNet.getName() << " with distance: " << firstNet.getDistance()
-		<< ", output: " << firstNet.getResults().at(0) << " " << firstNet.getResults().at(1)
-		<< " and index: " << round(pow(firstNet.getResults().at(1), -1)) << std::endl;
-	/*
+	///*
 	std::string tableForNetworks = "networks";
 	std::string queryForNetworks = "(NET_NAME TEXT NOT NULL);";
 	db.createTable(tableForNetworks, queryForNetworks);
@@ -243,12 +217,40 @@ int main()
 		}
 	}
 
-	std::string tableForResults = "results";
-	std::string queryForResults = "(NET_NAME TEXT NOT NULL, TEST_ID INT NOT NULL, POPULATION_SIZE INT NOT NULL, TARGET TEXT NOT NULL, "
-		"EPOCHES INT NOT NULL); ";
-	db.createTable(tableForResults, queryForResults);
-	std::string valuesForResults = "VALUES ('" + firstNet.getName() + "', " + std::to_string(test_id) + ", " + std::to_string(MAX_POPULATION) + ", " + "'" + substr + "', " + std::to_string(epoch) + ");";
-	db.insert(tableForResults, valuesForResults);
+	//std::string tableForResults = "results";
+	//std::string queryForResults = "(NET_NAME TEXT NOT NULL, TEST_ID INT NOT NULL, POPULATION_SIZE INT NOT NULL, TARGET TEXT NOT NULL, "
+	//	"EPOCHES INT NOT NULL); ";
+	//db.createTable(tableForResults, queryForResults);
+	//std::string valuesForResults = "VALUES ('" + firstNet.getName() + "', " + std::to_string(test_id) + ", " + std::to_string(MAX_POPULATION) + ", " + "'" + substr + "', " + std::to_string(epoch) + ");";
+	//db.insert(tableForResults, valuesForResults);
 	//*/
+
+	std::cout << "Enter string: ";
+	std::string userInput;
+	std::cin >> userInput;
+	while (userInput.size() < inputLayerSize)
+	{
+		userInput += " ";
+	}
+
+	std::cout << "Enter symbol: ";
+	char userSymbol;
+	std::cin >> userSymbol;
+
+	std::vector<double> userNormalizedInput = StringNormalizer::normalize(userInput);
+	std::vector<double> result = StringNormalizer::findOneChar(userNormalizedInput, userSymbol, outputLayerSize);
+	target.at(0) = result.at(0);
+	target.at(1) = 1.0 / result.at(1);
+
+	for (int i = 0; i < 100; i++)
+	{
+		firstNet.forwardPropagation(userNormalizedInput);
+		firstNet.backPropagation(target);
+	}
+
+	std::cout << "First net: " << firstNet.getName() << " with distance: " << firstNet.getDistance()
+		<< ", output: " << firstNet.getResults().at(0) << " " << firstNet.getResults().at(1)
+		<< " and index: " << round(pow(firstNet.getResults().at(1), -1)) << std::endl;
+	
 	return 0;
 }
