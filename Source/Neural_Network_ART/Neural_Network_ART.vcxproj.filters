@@ -24,9 +24,6 @@
     <ClCompile Include="net.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="trainer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="genetic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -42,23 +39,12 @@
     <ClCompile Include="normalizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="fileSaver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="DataForTraining.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="neuron.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="net.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="trainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="genetic.h">
@@ -70,13 +56,5 @@
     <ClInclude Include="normalizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="fileSaver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="SQLScript.sql">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
 </Project>

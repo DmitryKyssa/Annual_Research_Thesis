@@ -48,23 +48,13 @@ void Database::update(std::string& table, std::string& values, int rowid)
 	ss.str("");
 }
 
-void Database::deleteRow(std::string& table, int rowid)
-{
-	ss << "DELETE FROM " << table << " WHERE rowid = " << rowid << ";";
-	sqlite3_exec(db, ss.str().c_str(), NULL, 0, &errMsg);
-	if (errMsg != NULL) 
-	{
-		std::cout << errMsg << std::endl;
-	}
-	ss.str("");
-}
-
 bool Database::tableExists(const std::string& tableName)
 {
 	bool exists = false;
 	std::string sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='" + tableName + "';";
 	char* errMsg = nullptr;
-	auto callback = [](void* data, int argc, char** argv, char** azColName) -> int {
+	auto callback = [](void* data, int argc, char** argv, char** azColName) -> int 
+		{
 		*(bool*)data = true;
 		return 0;
 		};
@@ -75,7 +65,7 @@ bool Database::tableExists(const std::string& tableName)
 	return exists;
 }
 
-bool Database::isTableFull(const std::string& tableName) {
+bool Database::isTableFull(const std::string& tableName, int maxRecords) {
 	bool isEmpty = true;
 	std::string sql = "SELECT COUNT(*) FROM " + tableName + ";";
 	char* errMsg = nullptr;
@@ -109,4 +99,20 @@ std::string Database::select(std::string& table, std::string& selection, int row
 
 	ss.str("");
 	return result;
+}
+
+std::vector<std::string> Database::selectVector(std::string& table, std::string& selection)
+{
+	std::vector<std::string> vector;
+	ss << "SELECT " << selection << " FROM " << table << ";";
+
+	if (sqlite3_prepare_v2(db, ss.str().c_str(), -1, &stmt, nullptr) == SQLITE_OK) 
+	{
+		while (sqlite3_step(stmt) == SQLITE_ROW) 
+		{
+			vector.push_back(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0)));
+		}
+		sqlite3_finalize(stmt);
+	}
+	return vector;
 }

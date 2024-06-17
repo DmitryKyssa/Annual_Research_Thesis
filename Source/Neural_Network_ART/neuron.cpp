@@ -1,7 +1,7 @@
 #include "neuron.h"
 #include <cmath>
-#include <iostream>
 #include <random>
+#include "net.h"
 
 Neuron::Neuron()
 {
@@ -12,7 +12,8 @@ Neuron::Neuron()
 
 Neuron::Neuron(unsigned int numOutputs, unsigned int myIndex)
 {
-	for (unsigned int i = 0; i < numOutputs; ++i) {
+	for (unsigned int i = 0; i < numOutputs; ++i) 
+	{
 		outputWeights.push_back(Synapse());
 		outputWeights.back().weight = randomWeight();
 	}
@@ -63,12 +64,10 @@ void Neuron::updateInputWeights(Layer& prevLayer) const
 double Neuron::innerProductWeightsAndGradient(const Layer& nextLayer) const
 {
 	double innerProduct = 0.0;
-
 	for (size_t i = 0; i < nextLayer.size() - 1; ++i)
 	{
 		innerProduct += outputWeights.at(i).weight * nextLayer.at(i).gradient;
 	}
-
 	return innerProduct;
 }
 
@@ -97,14 +96,11 @@ double Neuron::sigmoidDerivative(double sigmoid)
 void Neuron::feedForward(const Layer& previousLayer)
 {
 	double innerProduct = 0.0;
-
 	for (size_t i = 0; i < previousLayer.size(); ++i)
 	{
 		innerProduct += previousLayer.at(i).getOutput() * previousLayer.at(i).outputWeights.at(index).weight;
 	}
-	//std::cout << "Inner: " << innerProduct << std::endl;
 	output = Neuron::sigmoid(innerProduct);
-	//std::cout << "Output: " << output << std::endl;
 }
 
 Neuron& Neuron::operator=(const Neuron& other) 

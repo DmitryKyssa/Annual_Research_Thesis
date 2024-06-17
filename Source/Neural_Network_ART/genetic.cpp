@@ -7,10 +7,13 @@ std::vector<Net> Genetic::population;
 
 Layer Genetic::mutation(Layer& layer)
 {
-	for (size_t i = 0; i < layer.size(); i++) {
-		for (size_t j = 0; j < layer.at(i).getOutputWeights().size(); j++) {
+	for (size_t i = 0; i < layer.size(); i++)
+	{
+		for (size_t j = 0; j < layer.at(i).getOutputWeights().size(); j++)
+		{
 			int probability = rand() % 100;
-			if (probability < MUTATION_PROBABILITY) {
+			if (probability < MUTATION_PROBABILITY)
+			{
 				layer.at(i).getOutputWeights().at(j) = (rand() % 100) / 100.0;
 			}
 		}
@@ -25,16 +28,20 @@ const Net Genetic::crossover(const Net& mother, const Net& father)
 	Net::networksNames.pop_back();
 	Layer input = child.getLayers().at(0);
 
-	for (size_t j = 0; j < input.size(); j++) {
-		for (size_t k = 0; k < input.at(j).getOutputWeights().size(); k++) {
+	for (size_t j = 0; j < input.size(); j++) 
+	{
+		for (size_t k = 0; k < input.at(j).getOutputWeights().size(); k++) 
+		{
 			int probability = rand() % 100;
-			if (probability < 50) {
+			if (probability < 50) 
+			{
 				input.at(j).getOutputWeights().at(k) = father.getLayers().at(0).at(j).getOutputWeights().at(k);
 			}
 		}
 	}
 
-	child.getLayers().at(0) = mutation(input);
+	Layer hidden = child.getLayers().at(1);
+	child.getLayers().at(1) = mutation(hidden);
 
 	return child;
 }
@@ -50,35 +57,22 @@ void Genetic::selection()
 
 void Genetic::reduction()
 {
-	for (size_t i = 2; i < population.size(); i++) 
+	for (size_t i = 2; i < population.size(); i++)
 	{
-		std::string str = population.at(i).getName();
-		//str = "-" + str;
-		Net::networksNames.push_back(str);
+		Net::networksNames.push_back(population.at(i).getName());
 	}
 	population.erase(population.begin() + 2, population.end());
 }
 
-int Genetic::calculateFitnessByCoincidence(std::string convertedOutput, std::string convertedTarget)
-{
-	int fitness = 0;
-	for (size_t i = 0; i < convertedOutput.size(); i++) {
-		if (convertedOutput.at(i) == convertedTarget.at(i)) {
-			fitness++;
-		}
-	}
-	return fitness;
-}
-
 double Genetic::calculateFitnessByEuclidianDistance(std::vector<double> output, std::vector<double> target)
 {
-	if (output.size() != target.size()) 
+	if (output.size() != target.size())
 	{
 		std::cout << "Sizes of output and target vectors aren't equal!" << std::endl;
 		return 0.0;
 	}
 	double sum = 0.0;
-	for (size_t i = 0; i < output.size(); ++i) 
+	for (size_t i = 0; i < output.size(); ++i)
 	{
 		double diff = output[i] - target[i];
 		sum += diff * diff;
@@ -88,13 +82,13 @@ double Genetic::calculateFitnessByEuclidianDistance(std::vector<double> output, 
 
 double Genetic::calculateFitnessByManhattanDistance(std::vector<double> output, std::vector<double> target)
 {
-	if (output.size() != target.size()) 
+	if (output.size() != target.size())
 	{
 		std::cout << "Sizes of output and target vectors aren't equal!" << std::endl;
 		return 0.0;
 	}
 	double sum = 0.0;
-	for (size_t i = 0; i < output.size(); ++i) 
+	for (size_t i = 0; i < output.size(); ++i)
 	{
 		sum += std::abs(output[i] - target[i]);
 	}

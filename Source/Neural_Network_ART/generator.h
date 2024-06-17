@@ -2,10 +2,10 @@
 
 #include <string>
 
-class AlphanumericGenerator {
+class AlphanumericGenerator 
+{
 private:
     std::string alphanumericsymbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 !@#$%^&*()_+{}|:<>?";
 public:
     std::string generateRandomString(int length);
-    const int TESTS_NUMBER = 100;
 };

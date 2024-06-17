@@ -5,7 +5,6 @@
 #include "database.h"
 #include "generator.h"
 #include "normalizer.h"
-#include "fileSaver.h"
 #include <chrono>
 
 const int TESTS_NUMBER = 100;
@@ -31,12 +30,37 @@ int main()
 	AlphanumericGenerator gen;
 	Database db;
 	std::string tableForTests = "tests";
+	std::string tableForNetworks = "networks";
+	std::string tableForLayers = "layers";
+	std::string tableForNeurons = "neurons";
+	std::string tableForWeights = "weights";
 	char symbol = 'c';
 	const unsigned int outputLayerSize = 2;
 	unsigned int hiddenLayerSize = 10;
 	const unsigned int inputLayerSize = 100;
 	bool updateTableIfExists = false;
 	std::vector<double> target(outputLayerSize, 0.0);
+	std::vector <std::string> createdNetworksNames;
+
+	//std::string selection = "NET_NAME";
+	//if (db.tableExists(tableForNetworks))
+	//{
+	//	std::cout << "Do you want to upload existing network(s)? (0 - yes, 1 - no): ";
+	//	int input = 0;
+	//	std::cin >> input;
+	//	if (input == 0)
+	//	{
+	//		createdNetworksNames = db.selectVector(tableForNetworks, selection);
+	//		int i = 0;
+	//		for (i = 0; i < createdNetworksNames.size(); i++)
+	//		{
+	//			std::cout << std::to_string(i + 1) << ") " << createdNetworksNames.at(i) << std::endl;
+	//		}
+	//		std::cout << "Load one of this networks: ";
+	//		std::cin >> i;
+	//		//Net fromDB = createNetFromDB();
+	//	}
+	//}
 
 	if (!db.tableExists(tableForTests))
 	{
@@ -46,8 +70,8 @@ int main()
 		for (int i = 1; i <= TESTS_NUMBER; i++)
 		{
 			std::string randomString = gen.generateRandomString(100);
-			std::vector<double> normalizedRandomString = StringNormalizer::normalize(randomString);
-			std::vector<double> result = StringNormalizer::findOneChar(normalizedRandomString, symbol, outputLayerSize);
+			std::vector<double> normalizedRandomString = Normalizer::normalize(randomString);
+			std::vector<double> result = Normalizer::findOneChar(normalizedRandomString, symbol, outputLayerSize);
 			std::string values = "VALUES ('" + randomString + "', " + std::to_string(result.at(0)) + ", " + std::to_string(result.at(1)) + ");";
 			db.insert(tableForTests, values);
 		}
@@ -64,13 +88,13 @@ int main()
 		}
 	}
 
-	if (db.isTableFull(tableForTests) && updateTableIfExists)
+	if (db.isTableFull(tableForTests, TESTS_NUMBER) && updateTableIfExists)
 	{
 		for (int i = 1; i <= TESTS_NUMBER; i++)
 		{
 			std::string randomString = gen.generateRandomString(100);
-			std::vector<double> normalizedRandomString = StringNormalizer::normalize(randomString);
-			std::vector<double> result = StringNormalizer::findOneChar(normalizedRandomString, symbol, outputLayerSize);
+			std::vector<double> normalizedRandomString = Normalizer::normalize(randomString);
+			std::vector<double> result = Normalizer::findOneChar(normalizedRandomString, symbol, outputLayerSize);
 			std::string values = "VALUES ('" + randomString + "', " + std::to_string(result.at(0)) + ", " + std::to_string(result.at(1)) + ");";
 			std::string update = "TEST = '" + randomString + "', SYMBOL = " + std::to_string(result.at(0)) + ", POSITION = " + std::to_string(result.at(1));
 			db.update(tableForTests, update, i);
@@ -109,7 +133,7 @@ int main()
 		std::string selection = "TEST";
 		std::string str = db.select(tableForTests, selection, ++testID);
 		std::cout << "Test ID: " << testID << std::endl;
-		std::vector<double> input = StringNormalizer::normalize(str);
+		std::vector<double> input = Normalizer::normalize(str);
 
 		selection = "SYMBOL";
 		target.at(0) = std::stoi(db.select(tableForTests, selection, testID));
@@ -117,7 +141,7 @@ int main()
 		int index = std::stoi(db.select(tableForTests, selection, testID));
 		if (index == 0)
 		{
-			target.at(1) = 1.0;
+			target.at(1) = 1.0; 
 		}
 		else
 		{
@@ -183,20 +207,18 @@ int main()
 
 			std::cout << std::endl;
 		}
-		//system("pause");
 	} while (testID < TESTS_NUMBER);
 	finish = std::chrono::high_resolution_clock::now();
 	duration = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
 	std::cout << "Microseconds for training: " << duration.count() << std::endl;
 
-	///*
-	std::string tableForNetworks = "networks";
-	std::string queryForNetworks = "(NET_NAME TEXT NOT NULL);";
+	std::string queryForNetworks = "(NET_NAME TEXT NOT NULL, INPUT_LAYER INT NOT NULL, HIDDEN_LAYER INT NOT NULL, OUTPUT_LAYER INT NOT NULL, POPULATION_SIZE INT NOT NULL, EPOCHS INT NOT NULL, ERROR REAL NOT NULL);"; 
 	db.createTable(tableForNetworks, queryForNetworks);
-	std::string valuesForNetworks = "VALUES ('" + firstNet.getName() + "');";
+	std::string valuesForNetworks = "VALUES ('" + firstNet.getName() + "', " + std::to_string(inputLayerSize) + ", " 
+		+ std::to_string(hiddenLayerSize) + ", " + std::to_string(outputLayerSize) + ", " + std::to_string(MAX_POPULATION)
+		+ ", " + std::to_string(maxEpochs) + ", " + std::to_string(firstNet.getError()) + ");";
 	db.insert(tableForNetworks, valuesForNetworks);
 
-	std::string tableForLayers = "layers";
 	std::string queryForLayers = "(NET_NAME TEXT NOT NULL, LAYER_ID INT NOT NULL);";
 	db.createTable(tableForLayers, queryForLayers);
 	for (size_t i = 0; i < firstNet.getLayers().size(); i++)
@@ -205,29 +227,36 @@ int main()
 		db.insert(tableForLayers, valuesForLayers);
 	}
 
-	std::string tableForNeurons = "neurons";
 	std::string queryForNeurons = "(NET_NAME TEXT NOT NULL, LAYER_ID INT NOT NULL, NEURON INT NOT NULL, OUTPUT REAL NOT NULL);";
 	db.createTable(tableForNeurons, queryForNeurons);
 	for (size_t i = 0; i < firstNet.getLayers().size(); i++)
 	{
 		for (size_t j = 0; j < firstNet.getLayers().at(i).size(); j++)
 		{
-			std::string valuesForNeurons = "VALUES ('" + firstNet.getName() + "', " + std::to_string(i + 1) + ", " + std::to_string(j + 1) + ", " + std::to_string(firstNet.getLayers().at(i).at(j).getOutput()) + ");";
+			std::string valuesForNeurons = "VALUES ('" + firstNet.getName() + "', " + std::to_string(i + 1) + ", " 
+				+ std::to_string(j + 1) + ", " + std::to_string(firstNet.getLayers().at(i).at(j).getOutput()) + ");";
 			db.insert(tableForNeurons, valuesForNeurons);
 		}
 	}
 
-	//std::string tableForResults = "results";
-	//std::string queryForResults = "(NET_NAME TEXT NOT NULL, TEST_ID INT NOT NULL, POPULATION_SIZE INT NOT NULL, TARGET TEXT NOT NULL, "
-	//	"EPOCHES INT NOT NULL); ";
-	//db.createTable(tableForResults, queryForResults);
-	//std::string valuesForResults = "VALUES ('" + firstNet.getName() + "', " + std::to_string(test_id) + ", " + std::to_string(MAX_POPULATION) + ", " + "'" + substr + "', " + std::to_string(epoch) + ");";
-	//db.insert(tableForResults, valuesForResults);
-	//*/
+	std::string queryForWeights = "(NET_NAME TEXT NOT NULL, LAYER_ID INT NOT NULL, NEURON INT NOT NULL, SYNAPSE INT NOT NULL, WEIGHT REAL NOT NULL);";
+	db.createTable(tableForWeights, queryForWeights);
+	for (size_t i = 0; i < firstNet.getLayers().size(); i++)
+	{
+		for (size_t j = 0; j < firstNet.getLayers().at(i).size(); j++)
+		{
+			for (size_t k = 0; k < firstNet.getLayers().at(i).at(j).getOutputWeights().size(); k++)
+			{
+				std::string valuesForWeights = "VALUES ('" + firstNet.getName() + "', " + std::to_string(i + 1) + ", "
+					+ std::to_string(j + 1) + ", " + std::to_string(k + 1) + ", " + std::to_string(firstNet.getLayers().at(i).at(j).getOutputWeights().at(k)) + ");";
+				db.insert(tableForWeights, valuesForWeights);
+			}
+		}
+	}
 
 	std::cout << "Enter string: ";
 	std::string userInput;
-	std::cin >> userInput;
+	std::getline(std::cin >> std::ws, userInput);
 	while (userInput.size() < inputLayerSize)
 	{
 		userInput += " ";
@@ -237,8 +266,8 @@ int main()
 	char userSymbol;
 	std::cin >> userSymbol;
 
-	std::vector<double> userNormalizedInput = StringNormalizer::normalize(userInput);
-	std::vector<double> result = StringNormalizer::findOneChar(userNormalizedInput, userSymbol, outputLayerSize);
+	std::vector<double> userNormalizedInput = Normalizer::normalize(userInput);
+	std::vector<double> result = Normalizer::findOneChar(userNormalizedInput, userSymbol, outputLayerSize);
 	target.at(0) = result.at(0);
 	target.at(1) = 1.0 / result.at(1);
 
@@ -251,6 +280,6 @@ int main()
 	std::cout << "First net: " << firstNet.getName() << " with distance: " << firstNet.getDistance()
 		<< ", output: " << firstNet.getResults().at(0) << " " << firstNet.getResults().at(1)
 		<< " and index: " << round(pow(firstNet.getResults().at(1), -1)) << std::endl;
-	
+
 	return 0;
 }

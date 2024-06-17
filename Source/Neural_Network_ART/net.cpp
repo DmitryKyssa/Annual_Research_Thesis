@@ -31,16 +31,23 @@ Net::Net(const std::vector<unsigned int>& topology, std::string& name)
 	for (size_t i = 0; i < numLayers; i++)
 	{
 		layers.push_back(Layer());
-		unsigned int numOutputs = i == topology.size() - 1 ? 1 : topology.at(i + 1);
+		unsigned int numOutputs;
+		if (i == topology.size() - 1)
+		{
+			numOutputs = 0;
+		}
+		else
+		{
+			numOutputs = topology.at(i + 1);
+		}
 
 		for (unsigned int neuronNum = 0; neuronNum < topology.at(i); neuronNum++)
 		{
 			layers.back().push_back(Neuron(numOutputs, neuronNum));
 		}
 	}
+
 	error = 0.0;
-	previousAverageError = 0.0;
-	fitness = 0;
 	distance = 0.0;
 	this->name = name;
 }
@@ -49,8 +56,6 @@ Net Net::operator=(const Net& other)
 {
 	layers = other.layers;
 	error = other.error;
-	previousAverageError = other.previousAverageError;
-	fitness = other.fitness;
 	name = other.name;
 	distance = other.distance;
 	return *this;
@@ -69,18 +74,11 @@ void Net::setDistance(double distance)
 std::vector<double> Net::getResults() const
 {
 	std::vector<double> result;
-
 	for (size_t i = 0; i < layers.back().size(); ++i)
 	{
 		result.push_back(layers.back().at(i).getOutput());
 	}
-
 	return result;
-}
-
-double Net::getRecentAverageError() const
-{
-	return previousAverageError;
 }
 
 double Net::getError() const
@@ -96,16 +94,6 @@ std::vector<Layer> Net::getLayers() const
 std::string Net::getName() const
 {
 	return name;
-}
-
-int Net::getFitness() const
-{
-	return fitness;
-}
-
-void Net::setFitness(int fitness)
-{
-	this->fitness = fitness;
 }
 
 void Net::setName(std::string& newName)
@@ -125,8 +113,6 @@ void Net::backPropagation(const std::vector<double>& targetValues)
 	}
 	error /= outputLayer.size() - 1;
 	error = sqrt(error);
-
-	previousAverageError = (previousAverageError * smooth + error) / (smooth + 1.0);
 
 	for (size_t i = 0; i < outputLayer.size(); i++)
 	{
