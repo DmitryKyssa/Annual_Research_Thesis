@@ -15,8 +15,8 @@ typedef std::vector<Neuron> Layer;
 class Neuron
 {
 private:
-	const double trainingRate = 1; 
-	const double alpha = 0.75; 
+	const double trainingRate = 0.15; 
+	const double alpha = 0.5; 
 	static double sigmoid(double input);
 	static double sigmoidDerivative(double sigmoid);
 	static double randomWeight();

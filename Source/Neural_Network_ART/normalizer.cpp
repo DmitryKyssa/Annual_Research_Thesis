@@ -28,7 +28,6 @@ std::vector<double> StringNormalizer::findOneChar(std::vector<double>& normalize
 	}
 	else {
 		std::cout << "Value '" << symbol << "' was not found in vector." << std::endl;
-		output.at(1) = normalized.size() + 1;
 	}
 
 	return output;

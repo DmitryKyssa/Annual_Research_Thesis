@@ -80,7 +80,7 @@ bool Database::isTableFull(const std::string& tableName) {
 	std::string sql = "SELECT COUNT(*) FROM " + tableName + ";";
 	char* errMsg = nullptr;
 	auto callback = [](void* data, int argc, char** argv, char** azColName) -> int {
-		if (argc == 1 && argv[0] && std::stoi(argv[0]) > 100) 
+		if (argc == 1 && argv[0] && std::stoi(argv[0]) >= 100) 
 		{
 			*(bool*)data = false;
 		}

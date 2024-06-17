@@ -26,44 +26,70 @@ enum DistanceCalculating
 	Manhattan
 };
 
-int main() {
+int main()
+{
 	AlphanumericGenerator gen;
 	Database db;
-	char symbol = 'c';
-	int outputLayerSize = 2;
-	bool updateTableIfExists = false;
-
 	std::string tableForTests = "tests";
-	std::string query = "(TEST TEXT NOT NULL, SYMBOL INT NOT NULL, POSITION INT NOT NULL);";
-	db.createTable(tableForTests, query);
-	query = "";
+	char symbol = 'c';
+	const unsigned int outputLayerSize = 2;
+	unsigned int hiddenLayerSize = 10;
+	const unsigned int inputLayerSize = 100;
+	bool updateTableIfExists = false;
+	std::vector<double> target(outputLayerSize, 0.0);
 
-	if (!db.tableExists(tableForTests) || updateTableIfExists)
+	if (!db.tableExists(tableForTests))
 	{
-		std::cout << "creating or updating" << std::endl;
-		for (int i = 1; i <= TESTS_NUMBER; i++) {
+		std::string query = "(TEST TEXT NOT NULL, SYMBOL INT NOT NULL, POSITION INT NOT NULL);";
+		db.createTable(tableForTests, query);
+
+		for (int i = 1; i <= TESTS_NUMBER; i++)
+		{
 			std::string randomString = gen.generateRandomString(100);
 			std::vector<double> normalizedRandomString = StringNormalizer::normalize(randomString);
 			std::vector<double> result = StringNormalizer::findOneChar(normalizedRandomString, symbol, outputLayerSize);
 			std::string values = "VALUES ('" + randomString + "', " + std::to_string(result.at(0)) + ", " + std::to_string(result.at(1)) + ");";
-
-			if (db.tableExists(tableForTests) && !db.isTableFull(tableForTests))
-			{
-				std::string update = "TEST = '" + randomString + "', SYMBOL = " + std::to_string(result.at(0)) + ", POSITION = " + std::to_string(result.at(1));
-				db.update(tableForTests, update, i);
-			}
-			else
-			{
-				db.insert(tableForTests, values);
-			}
+			db.insert(tableForTests, values);
 		}
 	}
 
-	std::string selection = "TEST";
-	int test_id = 1;
-	std::string str = db.select(tableForTests, selection, test_id);
+	if (!updateTableIfExists)
+	{
+		std::cout << "Do you want to update new tests? (0 - yes, 1 - no): ";
+		int input = 0;
+		std::cin >> input;
+		if (input == 0)
+		{
+			updateTableIfExists = true;
+		}
+	}
 
-	std::vector<unsigned int> topology = { static_cast<unsigned int>(str.length()), 5, static_cast<unsigned int>(outputLayerSize) };
+	if (db.isTableFull(tableForTests) && updateTableIfExists)
+	{
+		for (int i = 1; i <= TESTS_NUMBER; i++)
+		{
+			std::string randomString = gen.generateRandomString(100);
+			std::vector<double> normalizedRandomString = StringNormalizer::normalize(randomString);
+			std::vector<double> result = StringNormalizer::findOneChar(normalizedRandomString, symbol, outputLayerSize);
+			std::string values = "VALUES ('" + randomString + "', " + std::to_string(result.at(0)) + ", " + std::to_string(result.at(1)) + ");";
+			std::string update = "TEST = '" + randomString + "', SYMBOL = " + std::to_string(result.at(0)) + ", POSITION = " + std::to_string(result.at(1));
+			db.update(tableForTests, update, i);
+		}
+	}
+
+	std::cout << "Enter the number of neurons in hidden layer: ";
+	int input = 0;
+	std::cin >> input;
+
+	std::cout << "Distance calculating method (0 - Euclidian, 1 - Manhattan): ";
+	int method;
+	std::cin >> method;
+
+	std::cout << "Enter number of epochs: ";
+	size_t maxEpochs = 0;
+	std::cin >> maxEpochs;
+
+	std::vector<unsigned int> topology = { inputLayerSize, hiddenLayerSize, outputLayerSize };
 	auto start = std::chrono::high_resolution_clock::now();
 	Net firstNet{ topology, Net::networksNames.back() };
 	Net::networksNames.pop_back();
@@ -77,96 +103,104 @@ int main() {
 	duration = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
 	std::cout << "Microseconds for creating second net: " << duration.count() << std::endl;
 
-	std::vector<double> input = StringNormalizer::normalize(str);
-	std::cout << "Input: " << input << std::endl;
-
-	std::vector<double> target(outputLayerSize, 0.0);
-	selection = "SYMBOL";
-	target.at(0) = std::stoi(db.select(tableForTests, selection, test_id));
-	selection = "POSITION";
-	int index = std::stoi(db.select(tableForTests, selection, test_id));
-	target.at(1) = 1.0 / index;
-	std::cout << "Target: " << target << std::endl;
-	std::cout << "Index: " << index << std::endl;
-
-	DistanceCalculating method = DistanceCalculating::Manhattan;
-
-	std::cout << "Enter number of epochs: ";
-	size_t maxEpochs = 0;
-	std::cin >> maxEpochs;
-
-	size_t epoch = 0;
-	while (epoch < maxEpochs)
+	int testID = 0;
+	do
 	{
-		firstNet.forwardPropagation(input);
-		firstNet.backPropagation(target);
-		secondNet.forwardPropagation(input);
-		secondNet.backPropagation(target);
-
-		Genetic::population.push_back(firstNet);
-		Genetic::population.push_back(secondNet);
-
-		std::cout << "Epoch #" << epoch + 1 << std::endl;
-		start = std::chrono::high_resolution_clock::now();
-
-		while (Genetic::population.size() < MAX_POPULATION)
+		std::string selection = "TEST";
+		std::string str = db.select(tableForTests, selection, ++testID);
+		std::cout << "Test ID: " << testID << std::endl;
+		std::vector<double> input = StringNormalizer::normalize(str);
+		while (input.size() < inputLayerSize)
 		{
-			Net child = Genetic::crossover(firstNet, secondNet);
-			Genetic::population.push_back(child);
+			input.push_back(0.01);
 		}
 
-		for (size_t i = 2; i < Genetic::population.size(); i++)
+		selection = "SYMBOL";
+		target.at(0) = std::stoi(db.select(tableForTests, selection, testID));
+		selection = "POSITION";
+		int index = std::stoi(db.select(tableForTests, selection, testID));
+		if (index == 0)
 		{
-			for (size_t j = 0; j < 5; j++)
-			{
-				Genetic::population.at(i).forwardPropagation(input);
-				Genetic::population.at(i).backPropagation(target);
-			}
-		}
-
-		if (method == DistanceCalculating::Manhattan)
-		{
-			for (size_t i = 0; i < Genetic::population.size(); i++)
-			{
-				Genetic::population.at(i).setDistance(Genetic::calculateFitnessByManhattanDistance(Genetic::population.at(i).getResults(), target));
-			}
+			target.at(1) = 0.0;
 		}
 		else
 		{
-			for (size_t i = 0; i < Genetic::population.size(); i++)
-			{
-				Genetic::population.at(i).setDistance(Genetic::calculateFitnessByEuclidianDistance(Genetic::population.at(i).getResults(), target));
-			}
+			target.at(1) = 1.0 / index;
 		}
 
-		Genetic::selection();
+		std::cout << "Target (output layer): " << target << std::endl;
+		std::cout << "Index: " << index << std::endl;
 
-		firstNet = Genetic::population.at(0);
-		secondNet = Genetic::population.at(1);
+		size_t epoch = 0;
+		while (epoch < maxEpochs)
+		{
+			firstNet.forwardPropagation(input);
+			firstNet.backPropagation(target);
+			secondNet.forwardPropagation(input);
+			secondNet.backPropagation(target);
 
-		std::cout << "First net: " << firstNet.getName() << " with distance: " << firstNet.getDistance()
-			<< ", output: " << firstNet.getResults().at(0) << " " << firstNet.getResults().at(1)
-			<< " and index: " << round(pow(firstNet.getResults().at(1), -1)) << std::endl;
-		std::cout << "Second net: " << secondNet.getName() << " with distance: " << secondNet.getDistance()
-			<< ", output: " << secondNet.getResults().at(0) << " " << secondNet.getResults().at(1)
-			<< " and index: " << round(pow(secondNet.getResults().at(1), -1)) << std::endl;
+			Genetic::population.push_back(firstNet);
+			Genetic::population.push_back(secondNet);
 
+			std::cout << "Epoch #" << ++epoch << std::endl;
+			start = std::chrono::high_resolution_clock::now();
+
+			while (Genetic::population.size() < MAX_POPULATION)
+			{
+				Net child = Genetic::crossover(firstNet, secondNet);
+				Genetic::population.push_back(child);
+			}
+
+			for (size_t i = 2; i < Genetic::population.size(); i++)
+			{
+				for (size_t j = 0; j < 20; j++)
+				{
+					Genetic::population.at(i).forwardPropagation(input);
+					Genetic::population.at(i).backPropagation(target);
+				}
+			}
+
+			for (size_t i = 0; i < Genetic::population.size(); i++)
+			{
+				std::vector<double> results = Genetic::population.at(i).getResults();
+				if (method == DistanceCalculating::Manhattan)
+				{
+					Genetic::population.at(i).setDistance(Genetic::calculateFitnessByManhattanDistance(results, target));
+				}
+				else
+				{
+					Genetic::population.at(i).setDistance(Genetic::calculateFitnessByEuclidianDistance(results, target));
+				}
+			}
+
+			Genetic::selection();
+
+			firstNet = Genetic::population.at(0);
+			secondNet = Genetic::population.at(1);
+
+			std::cout << "First net: " << firstNet.getName() << " with distance: " << firstNet.getDistance()
+				<< ", output: " << firstNet.getResults().at(0) << " " << firstNet.getResults().at(1)
+				<< " and index: " << round(pow(firstNet.getResults().at(1), -1)) << std::endl;
+			std::cout << "Second net: " << secondNet.getName() << " with distance: " << secondNet.getDistance()
+				<< ", output: " << secondNet.getResults().at(0) << " " << secondNet.getResults().at(1)
+				<< " and index: " << round(pow(secondNet.getResults().at(1), -1)) << std::endl;
+
+			std::cout << std::endl;
+		}
 		//system("pause");
-
-		epoch++;
-		finish = std::chrono::high_resolution_clock::now();
-		duration = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
-		std::cout << "Microseconds for training: " << duration.count() << std::endl;
-		std::cout << std::endl;
-	}
+	} while (testID < TESTS_NUMBER);
+	finish = std::chrono::high_resolution_clock::now();
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
+	std::cout << "Microseconds for training: " << duration.count() << std::endl;
 
 	std::cout << "Enter string: ";
 	std::string userInput;
 	std::cin >> userInput;
-	while (userInput.size() <= 100)
+	while (userInput.size() <= inputLayerSize)
 	{
 		userInput += " ";
 	}
+
 	std::cout << "Enter symbol: ";
 	char userSymbol;
 	std::cin >> userSymbol;
@@ -176,7 +210,7 @@ int main() {
 	target.at(0) = result.at(0);
 	target.at(1) = 1.0 / result.at(1);
 
-	for (int i = 0; i < 200; i++)
+	for (int i = 0; i < 100; i++)
 	{
 		firstNet.forwardPropagation(userNormalizedInput);
 		firstNet.backPropagation(target);

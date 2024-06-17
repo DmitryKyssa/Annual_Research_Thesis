@@ -24,12 +24,11 @@ const Net Genetic::crossover(const Net& mother, const Net& father)
 	child.setName(Net::networksNames.back());
 	Net::networksNames.pop_back();
 	Layer input = child.getLayers().at(0);
-	int counter = 0;
+
 	for (size_t j = 0; j < input.size(); j++) {
 		for (size_t k = 0; k < input.at(j).getOutputWeights().size(); k++) {
 			int probability = rand() % 100;
 			if (probability < 50) {
-				counter++;
 				input.at(j).getOutputWeights().at(k) = father.getLayers().at(0).at(j).getOutputWeights().at(k);
 			}
 		}
@@ -42,17 +41,18 @@ const Net Genetic::crossover(const Net& mother, const Net& father)
 
 void Genetic::selection()
 {
-	std::sort(population.begin(), population.end(), [](const Net& a, const Net& b) {
-		//return a.getFitness() > b.getFitness();
-		return a.getDistance() < b.getDistance();
-	});
+	std::sort(population.begin(), population.end(), [](const Net& a, const Net& b)
+		{
+			return a.getDistance() < b.getDistance();
+		});
 	reduction();
 }
 
 void Genetic::reduction()
 {
-	for (size_t i = 2; i < population.size(); i++) {
-		auto str = population.at(i).getName();
+	for (size_t i = 2; i < population.size(); i++) 
+	{
+		std::string str = population.at(i).getName();
 		str = "-" + str;
 		Net::networksNames.push_back(str);
 	}
@@ -72,12 +72,14 @@ int Genetic::calculateFitnessByCoincidence(std::string convertedOutput, std::str
 
 double Genetic::calculateFitnessByEuclidianDistance(std::vector<double> output, std::vector<double> target)
 {
-	if (output.size() != target.size()) {
+	if (output.size() != target.size()) 
+	{
 		std::cout << "Sizes of output and target vectors aren't equal!" << std::endl;
 		return 0.0;
 	}
 	double sum = 0.0;
-	for (size_t i = 0; i < output.size(); ++i) {
+	for (size_t i = 0; i < output.size(); ++i) 
+	{
 		double diff = output[i] - target[i];
 		sum += diff * diff;
 	}
@@ -86,12 +88,14 @@ double Genetic::calculateFitnessByEuclidianDistance(std::vector<double> output, 
 
 double Genetic::calculateFitnessByManhattanDistance(std::vector<double> output, std::vector<double> target)
 {
-	if (output.size() != target.size()) {
+	if (output.size() != target.size()) 
+	{
 		std::cout << "Sizes of output and target vectors aren't equal!" << std::endl;
 		return 0.0;
 	}
 	double sum = 0.0;
-	for (size_t i = 0; i < output.size(); ++i) {
+	for (size_t i = 0; i < output.size(); ++i) 
+	{
 		sum += std::abs(output[i] - target[i]);
 	}
 	return sum;
