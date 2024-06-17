@@ -71,10 +71,9 @@ std::vector<double> Net::getResults() const
 	std::vector<double> result;
 
 	for (size_t i = 0; i < layers.back().size(); ++i)
-		for (size_t i = 0; i < layers.back().size() - 1; ++i)
-		{
-			result.push_back(layers.back().at(i).getOutput());
-		}
+	{
+		result.push_back(layers.back().at(i).getOutput());
+	}
 
 	return result;
 }
@@ -159,15 +158,15 @@ void Net::backPropagation(const std::vector<double>& targetValues)
 
 void Net::forwardPropagation(const std::vector<double>& inputs)
 {
-	for (size_t i = 0; i < inputs.size(); i++) 
+	for (size_t i = 0; i < inputs.size(); i++)
 	{
 		layers.at(0).at(i).setOutput(inputs.at(i));
 	}
 
-	for (size_t i = 1; i < layers.size(); i++) 
+	for (size_t i = 1; i < layers.size(); i++)
 	{
 		Layer& prevLayer = layers.at(i - 1);
-		for (size_t j = 0; j < layers.at(i).size(); j++) 
+		for (size_t j = 0; j < layers.at(i).size(); j++)
 		{
 			layers.at(i).at(j).feedForward(prevLayer);
 		}

@@ -117,7 +117,7 @@ int main()
 		int index = std::stoi(db.select(tableForTests, selection, testID));
 		if (index == 0)
 		{
-			target.at(1) = 0.0;
+			target.at(1) = 1.0;
 		}
 		else
 		{
@@ -192,7 +192,7 @@ int main()
 	std::cout << "Enter string: ";
 	std::string userInput;
 	std::cin >> userInput;
-	while (userInput.size() <= inputLayerSize)
+	while (userInput.size() < inputLayerSize)
 	{
 		userInput += " ";
 	}
